@@ -7,23 +7,23 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Entity
-@Table(name = "payments")
-public class Payment {
+@Table(name = "maintenances")
+public class Maintenance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate paymentDate;
-    private Double amount;
-    private String paymentMethod;
-    private String paymentStatus;
-    private String operationCode;
-    //<-reservation
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String status;
+    private String description;
+    private Double cost;
+    private LocalDate createdAt;
+    //<-drone
     @ManyToOne
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
-
+    @JoinColumn(name = "drone_id")
+    private Drone drone;
 }

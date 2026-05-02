@@ -1,5 +1,6 @@
 package com.arqui.seedair.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +23,16 @@ public class Drone {
     private LocalDate acquisitionDate;
     private String currentStatus;
 
-//->reservation
-
-//->maintenance
-
-//<-droneModel
+    //->reservation
+    @JsonIgnore
+    @OneToMany(mappedBy = "drone", fetch = FetchType.EAGER)
+    private List<Reservation>reservations;
+    //->maintenance
+    @JsonIgnore
+    @OneToMany(mappedBy = "drone", fetch = FetchType.EAGER)
+    private List<Maintenance> maintenances;
+    //<-droneModel
+    @ManyToOne
+    @JoinColumn(name = "droneModel_id")
+    private DroneModel droneModel;
 }

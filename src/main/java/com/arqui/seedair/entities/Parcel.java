@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +23,8 @@ public class Parcel {
     private Double longitude;
     private LocalDate createdAt;
     //->reservation
+    @OneToMany(mappedBy = "parcel", fetch = FetchType.EAGER)
+    List<Reservation> reservations;
 
     //<-customer
     @ManyToOne

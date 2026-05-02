@@ -33,5 +33,8 @@ public class Customer {
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Parcel> parcels;
     //->reservation
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    private List<Reservation> reservations;
 
 }
