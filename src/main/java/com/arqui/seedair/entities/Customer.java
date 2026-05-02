@@ -25,9 +25,13 @@ public class Customer {
     @JoinColumn(name = "user_id", unique = true,nullable = false)
     private User user;
     //->review
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    private List<Review> reviews;
     //->parcel
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    private List<Parcel> parcels;
     //->reservation
 
 }
