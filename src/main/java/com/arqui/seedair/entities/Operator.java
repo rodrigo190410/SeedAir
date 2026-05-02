@@ -21,5 +21,7 @@ public class Operator {
     private Integer experienceYears;
     private String availabilityStatus;
     //->reservation
+    @OneToMany(mappedBy = "operator", fetch = FetchType.EAGER)
+    private List<Reservation> reservations;
 
 }

@@ -22,5 +22,8 @@ public class Payment {
     private String paymentStatus;
     private String operationCode;
     //<-reservation
+    @ManyToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
 
 }
