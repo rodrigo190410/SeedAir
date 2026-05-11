@@ -17,12 +17,11 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-//    @PostMapping("users/register/customer") // http://localhost:8080/seedair/users/register/customer
-
-//    public ResponseEntity<CustomerDTO> register(@RequestBody CustomerDTO customer){
-//      CustomerDTO cust = customerService.addDTO(customer);
-//      return new ResponseEntity<>(cust, HttpStatus.CREATED);
-//    };
+    @PostMapping("users/register/customer") // http://localhost:8080/seedair/users/register/customer
+    public ResponseEntity<CustomerDTO> register(@RequestBody CustomerDTO customer){
+      CustomerDTO cust = customerService.addDTO(customer);
+      return new ResponseEntity<>(cust, HttpStatus.CREATED);
+    };
     //Seleccionar los clientes que tienen al menos un terreno que nunca ha tenido un reservación
     @GetMapping("/customers/atleastoneparcelandnoreservations")//http://localhost:8080/seedair/customers/query1
     public List<CustomerSummaryDTO> getCustomersNoReservation() {

@@ -5,6 +5,8 @@ import com.arqui.seedair.entities.Customer;
 import com.arqui.seedair.entities.Parcel;
 import com.arqui.seedair.entities.Reservation;
 import com.arqui.seedair.repositories.ReservationRepository;
+import com.arqui.seedair.services.CustomerService;
+import com.arqui.seedair.services.ParcelService;
 import com.arqui.seedair.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,10 @@ import java.util.NoSuchElementException;
 public class ReservationServiceImpl implements ReservationService {
     @Autowired
     ReservationRepository reservationRepository;
-   // @Autowired
-    //CustomerService customerService;
-    //@Autowired
-    //ParcelService parcelService;
+    @Autowired
+    CustomerService customerService;
+    @Autowired
+    ParcelService parcelService;
 
     @Override
     public Reservation add(Reservation reservation) {
@@ -78,11 +80,11 @@ public class ReservationServiceImpl implements ReservationService {
         newReservation.setScheduledStartDate(reservationRegisterDTO.getScheduledStartDate());
         newReservation.setScheduledEndDate(reservationRegisterDTO.getScheduledEndDate());
         newReservation.setHectares(reservationRegisterDTO.getHectares());
-        //Customer customer = customerService.findById(reservationRegisterDTO.getCustomerId());
-        //Parcel parcel = parcelService.findById(reservationRegisterDTO.getParcelId());
+        Customer customer = customerService.findById(reservationRegisterDTO.getCustomerId());
+        Parcel parcel = parcelService.findById(reservationRegisterDTO.getParcelId());
 
-        //newReservation.setCustomer(customer);
-        //newReservation.setParcel(parcel);
+        newReservation.setCustomer(customer);
+        newReservation.setParcel(parcel);
 
         newReservation.setStatus("PENDING");
         newReservation.setRatePerHectare(150.0);

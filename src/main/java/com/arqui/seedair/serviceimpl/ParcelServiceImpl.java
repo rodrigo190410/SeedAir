@@ -3,6 +3,7 @@ package com.arqui.seedair.serviceimpl;
 import com.arqui.seedair.dtos.ParcelDTO;
 import com.arqui.seedair.entities.Customer;
 import com.arqui.seedair.entities.Parcel;
+import com.arqui.seedair.repositories.CustomerRepository;
 import com.arqui.seedair.repositories.ParcelRepository;
 import com.arqui.seedair.services.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,8 @@ import java.time.LocalDate;
 public class ParcelServiceImpl implements ParcelService{
     @Autowired
     ParcelRepository parcelRepository;
-    //@Autowired
-    //CustomerRepository customerRepository;
+    @Autowired
+    CustomerRepository customerRepository;
     @Override
     public Parcel add(Parcel parcel) {
         return parcelRepository.save(parcel);
@@ -26,12 +27,8 @@ public class ParcelServiceImpl implements ParcelService{
         return parcelRepository.findById(id).get();
     }
 
-    //Eliminar para reemplazarlo por el que se encuentra debajo
-    @Override
-    public ParcelDTO register(ParcelDTO parcelDTO) {
-        return null;
-    }
-/*
+
+
     @Override
     public ParcelDTO register(ParcelDTO parcelDTO) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -46,5 +43,5 @@ public class ParcelServiceImpl implements ParcelService{
         parcelRepository.save(newParcel);
         return parcelDTO;
     }
-    */
+
 }
