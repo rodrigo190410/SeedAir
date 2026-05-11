@@ -18,7 +18,7 @@ public class Parcel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String locationText;
-    private Double areaHectares;
+    private Double totalHectares;
     private Double latitude;
     private Double longitude;
     private LocalDate createdAt;
