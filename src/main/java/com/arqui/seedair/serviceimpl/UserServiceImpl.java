@@ -4,7 +4,7 @@ import com.arqui.seedair.dtos.UserDTO;
 import com.arqui.seedair.entities.Authority;
 import com.arqui.seedair.entities.User;
 import com.arqui.seedair.repositories.UserRepository;
-//import com.arqui.seedair.services.AuthorityService;
+import com.arqui.seedair.services.AuthorityService;
 import com.arqui.seedair.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,8 +18,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
-//    @Autowired
-//    AuthorityService authorityService;
+    @Autowired
+    AuthorityService authorityService;
 
     @Override
     public User add(User user) {
@@ -41,12 +41,12 @@ public class UserServiceImpl implements UserService {
 
         List<Authority> authorityList = new ArrayList<>();
         List<String> authorityStringList = Arrays.stream(authorities.split(";")).toList();
-//        for (String authorityString : authorityStringList) {
-//            Authority authority = authorityService.findByName(authorityString);
-//            if (authority != null) {
-//                authorityList.add(authority);
-//            }
-//        }
+        for (String authorityString : authorityStringList) {
+            Authority authority = authorityService.findByName(authorityString);
+            if (authority != null) {
+                authorityList.add(authority);
+            }
+        }
         return authorityList;
     }
 
