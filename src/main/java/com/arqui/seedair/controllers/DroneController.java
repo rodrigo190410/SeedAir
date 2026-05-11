@@ -1,0 +1,49 @@
+package com.arqui.seedair.controllers;
+
+import com.arqui.seedair.dtos.DroneAvailableDTO;
+import com.arqui.seedair.entities.Drone;
+import com.arqui.seedair.services.DroneService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
+@RestController
+@CrossOrigin("*")
+@RequestMapping("/seedair/drones") // http://localhost:8080/seedair
+public class DroneController {
+
+    @Autowired
+    private DroneService droneService;
+
+    @GetMapping("/available") // http://localhost:8080/seedair/drones/available
+    public ResponseEntity<List<DroneAvailableDTO>> getAvailableDrones() {
+        List<DroneAvailableDTO> drones = droneService.getAvailableDrones();
+        return new ResponseEntity<>(drones, HttpStatus.OK);
+    }
+
+    @GetMapping("/status/{status}") // http://localhost:8080/seedair/drones/status/MAINTENANCE o INACTIVE
+    public ResponseEntity<List<Drone>> getDroneByStatus(@PathVariable String status) {
+        List<Drone> drones = droneService.getDronesByStatus(status);
+        return new ResponseEntity<>(drones, HttpStatus.OK);
+    }
+
+    @PostMapping("/add")// http://localhost:8080/seedair/drones/add
+    public ResponseEntity<Drone> addDrone(@RequestBody Drone drone) {
+        return new ResponseEntity<>(droneService.addDrone(drone), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete/{id}") //http://localhost:8080/seedair/drones/delete/6
+    public ResponseEntity<Drone> deleteDrone(@PathVariable Long id) {
+        try{
+            droneService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchElementException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+}
