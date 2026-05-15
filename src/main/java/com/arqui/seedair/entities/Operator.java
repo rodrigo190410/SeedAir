@@ -19,7 +19,7 @@ public class Operator {
     private String licenseCode;
     private String certificationLevel;
     private Integer experienceYears;
-    private String availabilityStatus;
+    private Boolean availabilityStatus;
     //->reservation
     @OneToMany(mappedBy = "operator", fetch = FetchType.EAGER)
     private List<Reservation> reservations;
