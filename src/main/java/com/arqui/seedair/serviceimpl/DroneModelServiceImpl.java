@@ -48,4 +48,9 @@ public class DroneModelServiceImpl implements DroneModelService {
         }
         droneModelRepository.deleteById(id);
     }
+
+    @Override
+    public DroneModel findById(Long id) {
+        return droneModelRepository.findById(id).get();
+    }
 }
