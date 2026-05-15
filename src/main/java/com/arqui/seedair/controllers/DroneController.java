@@ -1,6 +1,7 @@
 package com.arqui.seedair.controllers;
 
 import com.arqui.seedair.dtos.DroneAvailableDTO;
+import com.arqui.seedair.dtos.DroneDTO;
 import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.services.DroneService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class DroneController {
     }
 
     @PostMapping("/add")// http://localhost:8080/seedair/drones/add
-    public ResponseEntity<Drone> addDrone(@RequestBody Drone drone) {
-        return new ResponseEntity<>(droneService.addDrone(drone), HttpStatus.CREATED);
+    public ResponseEntity<DroneDTO> addDrone(@RequestBody DroneDTO drone) {
+        return new ResponseEntity<>(droneService.addDTO(drone), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}") //http://localhost:8080/seedair/drones/delete/6

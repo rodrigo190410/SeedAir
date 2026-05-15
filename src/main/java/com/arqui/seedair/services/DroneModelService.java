@@ -6,7 +6,7 @@ import com.arqui.seedair.entities.DroneModel;
 public interface DroneModelService {
 
     public DroneModel addDroneModel(DroneModel droneModel);
-    public DroneModel addDTO(DroneModelDTO dto);
+    public DroneModelDTO addDTO(DroneModelDTO dto);
 
 
 }

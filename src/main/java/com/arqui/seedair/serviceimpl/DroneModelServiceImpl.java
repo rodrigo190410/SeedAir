@@ -1,6 +1,8 @@
 package com.arqui.seedair.serviceimpl;
 
+import com.arqui.seedair.dtos.DroneDTO;
 import com.arqui.seedair.dtos.DroneModelDTO;
+import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.entities.DroneModel;
 import com.arqui.seedair.repositories.DroneModelRepository;
 import com.arqui.seedair.services.DroneModelService;
@@ -15,19 +17,25 @@ public class DroneModelServiceImpl implements DroneModelService {
     private DroneModelRepository droneModelRepository;
 
 
-
     @Override
     public DroneModel addDroneModel(DroneModel droneModel) {
         return droneModelRepository.save(droneModel);
     }
 
     @Override
-    public DroneModel addDTO(DroneModelDTO dto) {
-        DroneModel model= new DroneModel();
-        model.setModelName(dto.getName());
-        model.setBrand(dto.getBrand());
-        model.setSeedCapacityKg(dto.getSeedCapacityKg());
-        model.setAutonomyMinutes(dto.getAutonomyMinutes());
-        return droneModelRepository.save(model);
+    public DroneModelDTO addDTO(DroneModelDTO dto) {
+
+        DroneModel droneModel = new DroneModel(
+                null,
+                dto.getBrand(),
+                dto.getModelName(),
+                dto.getSeedCapacityKg(),
+                dto.getCoverageHectaresPerDay(),
+                dto.getAutonomyMinutes(),
+                dto.getMaxSpeedKmh(),
+                null
+        );
+        droneModelRepository.save(droneModel);
+        return dto;
     }
 }
