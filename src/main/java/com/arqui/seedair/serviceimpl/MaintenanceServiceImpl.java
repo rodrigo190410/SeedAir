@@ -1,5 +1,6 @@
 package com.arqui.seedair.serviceimpl;
 
+import com.arqui.seedair.dtos.MaintenanceEndDateDTO;
 import com.arqui.seedair.dtos.MaintenanceRegisterDTO;
 import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.entities.Maintenance;
@@ -31,5 +32,20 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         );
         maintenanceRepository.save(newMaintenance);
         return maintenanceRegister;
+    }
+
+    @Override
+    public Maintenance findById(Long id) {
+        return maintenanceRepository.findById(id).get();
+    }
+
+    @Override
+    public MaintenanceEndDateDTO registerEndDate(MaintenanceEndDateDTO maintenanceEndDate) {
+
+        Maintenance foundMaintenance = findById(maintenanceEndDate.getId());
+        foundMaintenance.setEndDate(maintenanceEndDate.getMaintenanceEndDate());
+
+        maintenanceRepository.save(foundMaintenance);
+        return maintenanceEndDate;
     }
 }

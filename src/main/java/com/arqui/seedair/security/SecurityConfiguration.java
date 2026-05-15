@@ -99,10 +99,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE,"/seedair/drones/**").hasAnyAuthority("ROLE_ADMIN")
                         //permisos maintenances
                         .requestMatchers(HttpMethod.POST,"/seedair/maintenances/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/seedair/maintenances/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ASSIST")
                         //permisos operators
                         .requestMatchers(HttpMethod.POST,"/seedair/operators/**").hasAnyAuthority("ROLE_ADMIN")
                         //permisos payments
-                        .requestMatchers(HttpMethod.PUT,"/seedair/payments/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/seedair/payments/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ASSIST")
                         //permisos droneModels
                         .requestMatchers(HttpMethod.POST,"/seedair/droneModel/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/seedair/droneModel/**").hasAnyAuthority("ROLE_ADMIN")

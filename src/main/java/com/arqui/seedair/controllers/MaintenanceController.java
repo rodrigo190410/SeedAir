@@ -1,5 +1,6 @@
 package com.arqui.seedair.controllers;
 
+import com.arqui.seedair.dtos.MaintenanceEndDateDTO;
 import com.arqui.seedair.dtos.MaintenanceRegisterDTO;
 import com.arqui.seedair.services.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,11 @@ public class MaintenanceController {
     public ResponseEntity<MaintenanceRegisterDTO> register(@RequestBody MaintenanceRegisterDTO maintenanceRegister){
         MaintenanceRegisterDTO newMaintenance = maintenanceService.register(maintenanceRegister);
         return new ResponseEntity<>(newMaintenance, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/maintenances/set/enddate") // http://localhost:8080/seedair/maintenances/set/enddate
+    public ResponseEntity<MaintenanceEndDateDTO> registerEndDate(@RequestBody MaintenanceEndDateDTO maintenanceEndDateDTO){
+        MaintenanceEndDateDTO endDate = maintenanceService.registerEndDate(maintenanceEndDateDTO);
+        return new ResponseEntity<>(endDate, HttpStatus.OK);
     }
 }

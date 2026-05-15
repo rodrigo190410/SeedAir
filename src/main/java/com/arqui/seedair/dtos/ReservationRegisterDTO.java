@@ -12,7 +12,6 @@ import java.time.LocalDate;
 public class ReservationRegisterDTO {
     private LocalDate scheduledStartDate;
     private LocalDate scheduledEndDate;
-    private Double hectares;
     private Long parcelId;
     private Long droneId;
     private Long operatorId;

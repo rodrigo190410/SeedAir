@@ -63,7 +63,7 @@ public class SeedAirApplication {
             userService.addDTO(new UserDTO(null, "adrianamanager", "pass", "ROLE_ASSIST"));
 
             //Data de prueba de modelos de drones usando DTO
-            droneModelService.addDroneModel(new DroneModel(null, "DJI Agras T40", "DJI",
+            droneModelService.addDroneModel(new DroneModel(null, "DJI", "DJI Agras T40",
                     40.0, 20.0, 180, 30.0, null
             ));
 //            droneModelService.addDTO(new DroneModelDTO("DJI Agras T20P", "DJI", 20.0, 15));
