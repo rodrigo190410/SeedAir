@@ -43,6 +43,23 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public List<ReservationResponseDTO> listReservations() {
+        List<Reservation> reservationList = listAll();
+        List<ReservationResponseDTO> newList = new ArrayList<>();
+
+        for (Reservation r:reservationList){
+            ReservationResponseDTO dto = new ReservationResponseDTO(
+                    r.getScheduledStartDate(),
+                    r.getTotalAmount(),
+                    r.getStatus(), r.getCustomer().getId(),
+                    r.getParcel().getId()
+            );
+            newList.add(dto);
+        }
+        return newList;
+    }
+
+    @Override
     public List<ReservationRangeDateDTO> listByReservationRangeDTO(LocalDate startFilter, LocalDate endFilter) {
         List<Reservation> reservationList = reservationRepository.findByScheduledStartDateBetween(startFilter, endFilter);
         List<ReservationRangeDateDTO> reservationRangeDateDTOList = new ArrayList<>();
@@ -80,7 +97,13 @@ public class ReservationServiceImpl implements ReservationService {
 
         @Override
         public ReservationRegisterDTO registerReservation(ReservationRegisterDTO reservationRegisterDTO) {
-        
+
+            if (reservationRegisterDTO.getParcelId() == null ||
+                    reservationRegisterDTO.getOperatorId() == null ||
+                    reservationRegisterDTO.getDroneId() == null) {
+                throw new IllegalArgumentException("No se puede registrar: La parcela, el operador y dron son obligatorios.");
+            }
+
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             Customer customer = customerRepository.findByUser_username(username);
             Parcel parcel = parcelService.findById(reservationRegisterDTO.getParcelId());
@@ -99,6 +122,17 @@ public class ReservationServiceImpl implements ReservationService {
             //Añadir validacion si hay dron disponible
             Drone drone = droneRepository.findById(reservationRegisterDTO.getDroneId()).get();
 
+            if (operator.getAvailabilityStatus()==false || !operator.getAvailabilityStatus()){
+                throw new IllegalStateException(
+                        "No se puede registrar la reserva: El operador seleccionado no se encuentra disponible."
+                );
+            }
+
+            if (!"ACTIVE".equals(drone.getCurrentStatus())){
+                throw new IllegalStateException(
+                        "No se puede registrar la reserva: El dron seleccionado no se encuentra disponible."
+                );
+            }
             Double totalAmount= hectares*ratePerHectare;
 
             Reservation newReservation = new Reservation(

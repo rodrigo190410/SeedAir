@@ -4,6 +4,7 @@ import com.arqui.seedair.dtos.MaintenanceEndDateDTO;
 import com.arqui.seedair.dtos.MaintenanceRegisterDTO;
 import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.entities.Maintenance;
+import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.MaintenanceRepository;
 import com.arqui.seedair.services.DroneService;
 import com.arqui.seedair.services.MaintenanceService;
@@ -36,7 +37,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public Maintenance findById(Long id) {
-        return maintenanceRepository.findById(id).get();
+        return maintenanceRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("El maintenance con ID " + id + " no existe."));
     }
 
     @Override

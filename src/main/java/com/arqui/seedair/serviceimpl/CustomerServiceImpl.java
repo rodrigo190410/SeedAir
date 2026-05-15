@@ -5,6 +5,7 @@ import com.arqui.seedair.dtos.CustomerSummaryDTO;
 import com.arqui.seedair.entities.Authority;
 import com.arqui.seedair.entities.Customer;
 import com.arqui.seedair.entities.User;
+import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.CustomerRepository;
 import com.arqui.seedair.repositories.UserRepository;
 import com.arqui.seedair.services.AuthorityService;
@@ -37,7 +38,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer findById(Long id) {
-        return customerRepository.findById(id).get();
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("El customer con ID " + id + " no existe."));
     }
 
     private List<Authority> authoritiesFromString(String authorities) {

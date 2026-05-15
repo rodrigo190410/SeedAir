@@ -1,5 +1,6 @@
 package com.arqui.seedair.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class Parcel {
     private Double longitude;
     private LocalDate createdAt;
     //->reservation
+    @JsonIgnore
     @OneToMany(mappedBy = "parcel", fetch = FetchType.EAGER)
     List<Reservation> reservations;
 

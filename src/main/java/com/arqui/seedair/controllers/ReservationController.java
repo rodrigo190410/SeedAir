@@ -28,10 +28,10 @@ public class ReservationController {
         ReservationRegisterDTO newRegister = reservationService.registerReservation(reservationRegisterDTO);
         return new ResponseEntity<>(newRegister, HttpStatus.OK);
     }
-    //Lista general de reservas -> temp
+    //Lista general de reservas -> admin
     @GetMapping("/reservations") // http://localhost:8080/seedair/reservations
-    public ResponseEntity<List<Reservation>> listAll(){
-        List<Reservation> reservationList = reservationService.listAll();
+    public ResponseEntity<List<ReservationResponseDTO>> listAll(){
+        List<ReservationResponseDTO> reservationList = reservationService.listReservations();
         return new ResponseEntity<>(reservationList, HttpStatus.OK);
     };
 

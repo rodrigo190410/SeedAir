@@ -4,6 +4,7 @@ import com.arqui.seedair.dtos.DroneDTO;
 import com.arqui.seedair.dtos.DroneModelDTO;
 import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.entities.DroneModel;
+import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.DroneModelRepository;
 import com.arqui.seedair.services.DroneModelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ public class DroneModelServiceImpl implements DroneModelService {
 
     @Override
     public DroneModel findById(Long id) {
-        return droneModelRepository.findById(id).get();
+        return droneModelRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("El modelo de dron con ID " + id + " no existe."));
     }
 }
