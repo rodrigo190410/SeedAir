@@ -1,14 +1,13 @@
 package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.*;
-import com.arqui.seedair.entities.Customer;
-import com.arqui.seedair.entities.Parcel;
-import com.arqui.seedair.entities.Reservation;
-import com.arqui.seedair.repositories.ReservationRepository;
+import com.arqui.seedair.entities.*;
+import com.arqui.seedair.repositories.*;
 import com.arqui.seedair.services.CustomerService;
 import com.arqui.seedair.services.ParcelService;
 import com.arqui.seedair.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,10 +20,15 @@ public class ReservationServiceImpl implements ReservationService {
     @Autowired
     ReservationRepository reservationRepository;
     @Autowired
-    CustomerService customerService;
+    CustomerRepository customerRepository;
+    @Autowired
+    PaymentRepository paymentRepository;
     @Autowired
     ParcelService parcelService;
-
+    @Autowired
+    OperatorRepository operatorRepository;
+    @Autowired
+    DroneRepository droneRepository;
     @Override
     public Reservation add(Reservation reservation) {
         return reservationRepository.save(reservation);
@@ -74,25 +78,41 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationRegisterDTO registerReservation(ReservationRegisterDTO reservationRegisterDTO) {
 
-        Reservation newReservation = new Reservation();
-
-        newReservation.setId(reservationRegisterDTO.getId());
-        newReservation.setScheduledStartDate(reservationRegisterDTO.getScheduledStartDate());
-        newReservation.setScheduledEndDate(reservationRegisterDTO.getScheduledEndDate());
-        newReservation.setHectares(reservationRegisterDTO.getHectares());
-        Customer customer = customerService.findById(reservationRegisterDTO.getCustomerId());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Customer customer = customerRepository.findByUser_username(username);
         Parcel parcel = parcelService.findById(reservationRegisterDTO.getParcelId());
+        Double hectares= parcel.getTotalHectares();
+        Double ratePerHectare = 0.0;
+        if (hectares <= 6) {
+            ratePerHectare = 75.0;
+        } else {
+            ratePerHectare = 50.0;
+        }
 
-        newReservation.setCustomer(customer);
-        newReservation.setParcel(parcel);
+        //Añadir validacion si hay operador disponible
+        Operator operator = operatorRepository.findById(reservationRegisterDTO.getOperatorId()).get();
+        //Añadir validacion si hay dron disponible
+        Drone drone = droneRepository.findById(reservationRegisterDTO.getDroneId()).get();
 
-        newReservation.setStatus("PENDING");
-        newReservation.setRatePerHectare(150.0);
-        newReservation.setTotalAmount(reservationRegisterDTO.getHectares() * 150.0);
-        newReservation.setPayments(new ArrayList<>());
+        Double totalAmount= hectares*ratePerHectare;
 
+        Reservation newReservation = new Reservation(
+                null, reservationRegisterDTO.getScheduledStartDate(), reservationRegisterDTO.getScheduledEndDate(),
+                hectares, ratePerHectare,totalAmount, "PENDIENTE", null,
+                new ArrayList<>(), customer, parcel, operator, drone
+        );
 
         reservationRepository.save(newReservation);
+
+        LocalDate paymentDate = newReservation.getScheduledEndDate().plusDays(1);
+
+        Payment initialPayment = new Payment(
+                null, paymentDate, totalAmount, "AL CONTADO", "PENDIENTE",
+                null, newReservation
+        );
+        Payment savedPayment = paymentRepository.save(initialPayment);
+        savedPayment.setOperationCode("OP-" + savedPayment.getId());
+        paymentRepository.save(savedPayment);
 
         return reservationRegisterDTO;
     }

@@ -21,7 +21,6 @@ public class Maintenance {
     private String status;
     private String description;
     private Double cost;
-    private LocalDate createdAt;
     //<-drone
     @ManyToOne
     @JoinColumn(name = "drone_id")
