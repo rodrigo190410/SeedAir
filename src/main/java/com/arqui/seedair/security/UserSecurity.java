@@ -47,9 +47,4 @@ public class UserSecurity implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return UserDetails.super.isCredentialsNonExpired();
     }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

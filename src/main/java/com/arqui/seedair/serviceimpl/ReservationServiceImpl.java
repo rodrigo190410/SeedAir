@@ -7,8 +7,10 @@ import com.arqui.seedair.services.CustomerService;
 import com.arqui.seedair.services.ParcelService;
 import com.arqui.seedair.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -75,47 +77,49 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationDTOList;
     }
 
-    @Override
-    public ReservationRegisterDTO registerReservation(ReservationRegisterDTO reservationRegisterDTO) {
+        @Override
+        public ReservationRegisterDTO registerReservation(ReservationRegisterDTO reservationRegisterDTO) {
+        
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            Customer customer = customerRepository.findByUser_username(username);
+            Parcel parcel = parcelService.findById(reservationRegisterDTO.getParcelId());
+            Double hectares= parcel.getTotalHectares();
+            Double ratePerHectare = 0.0;
+            if (hectares <= 6) {
+                ratePerHectare = 75.0;
+            } else {
+                ratePerHectare = 50.0;
+            }
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Customer customer = customerRepository.findByUser_username(username);
-        Parcel parcel = parcelService.findById(reservationRegisterDTO.getParcelId());
-        Double hectares= parcel.getTotalHectares();
-        Double ratePerHectare = 0.0;
-        if (hectares <= 6) {
-            ratePerHectare = 75.0;
-        } else {
-            ratePerHectare = 50.0;
+
+
+            //Añadir validacion si hay operador disponible
+            Operator operator = operatorRepository.findById(reservationRegisterDTO.getOperatorId()).get();
+            //Añadir validacion si hay dron disponible
+            Drone drone = droneRepository.findById(reservationRegisterDTO.getDroneId()).get();
+
+            Double totalAmount= hectares*ratePerHectare;
+
+            Reservation newReservation = new Reservation(
+                    null, reservationRegisterDTO.getScheduledStartDate(), reservationRegisterDTO.getScheduledEndDate(),
+                    hectares, ratePerHectare,totalAmount, "PENDIENTE", null,
+                    new ArrayList<>(), customer, parcel, operator, drone
+            );
+
+            reservationRepository.save(newReservation);
+
+            LocalDate paymentDate = newReservation.getScheduledEndDate().plusDays(1);
+
+            Payment initialPayment = new Payment(
+                    null, paymentDate, totalAmount, "AL CONTADO", "PENDIENTE",
+                    null, newReservation
+            );
+            Payment savedPayment = paymentRepository.save(initialPayment);
+            savedPayment.setOperationCode("OP-" + savedPayment.getId());
+            paymentRepository.save(savedPayment);
+
+            return reservationRegisterDTO;
         }
-
-        //Añadir validacion si hay operador disponible
-        Operator operator = operatorRepository.findById(reservationRegisterDTO.getOperatorId()).get();
-        //Añadir validacion si hay dron disponible
-        Drone drone = droneRepository.findById(reservationRegisterDTO.getDroneId()).get();
-
-        Double totalAmount= hectares*ratePerHectare;
-
-        Reservation newReservation = new Reservation(
-                null, reservationRegisterDTO.getScheduledStartDate(), reservationRegisterDTO.getScheduledEndDate(),
-                hectares, ratePerHectare,totalAmount, "PENDIENTE", null,
-                new ArrayList<>(), customer, parcel, operator, drone
-        );
-
-        reservationRepository.save(newReservation);
-
-        LocalDate paymentDate = newReservation.getScheduledEndDate().plusDays(1);
-
-        Payment initialPayment = new Payment(
-                null, paymentDate, totalAmount, "AL CONTADO", "PENDIENTE",
-                null, newReservation
-        );
-        Payment savedPayment = paymentRepository.save(initialPayment);
-        savedPayment.setOperationCode("OP-" + savedPayment.getId());
-        paymentRepository.save(savedPayment);
-
-        return reservationRegisterDTO;
-    }
 
     @Override
     public Reservation findById(Long id) {
