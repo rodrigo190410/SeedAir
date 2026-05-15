@@ -77,13 +77,9 @@ public class ReservationController {
 
     //eliminar una reserva mediante id
     @DeleteMapping("/delete/{id}") // http://localhost:8080/seedair/delete/1
-    public ResponseEntity<Reservation> deleteReservation(@PathVariable Long id){
-        try{
-            reservationService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (NoSuchElementException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id){
+        reservationService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

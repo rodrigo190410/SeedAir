@@ -2,6 +2,7 @@ package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.*;
 import com.arqui.seedair.entities.*;
+import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.*;
 import com.arqui.seedair.services.CustomerService;
 import com.arqui.seedair.services.ParcelService;
@@ -159,11 +160,19 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.findReservationByUsername(username);
     }
 
-    @Override
+   /* @Override
     public void delete(Long id) {
         //verificar si existe
         if (!reservationRepository.existsById(id)) {
             throw new NoSuchElementException("No se encontro la reserva con ese id:" + id);
+        }
+        reservationRepository.deleteById(id);
+    }*/
+
+    @Override
+    public void delete (Long id){
+        if(!reservationRepository.existsById(id)){
+            throw new ResourceNotFoundException("No se encontró la reserva con id:" + id);
         }
         reservationRepository.deleteById(id);
     }
