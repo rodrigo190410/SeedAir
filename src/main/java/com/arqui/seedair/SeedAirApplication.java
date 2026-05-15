@@ -56,12 +56,12 @@ public class SeedAirApplication {
             userService.addDTO(new UserDTO(null, "adrianauser", "pass", "ROLE_USER;ROLE_ASSIST"));
 
             //Data de prueba de modelos de drones usando DTO
-            droneModelService.addDTO(new DroneModelDTO("DJI Agras T40", "DJI", 40.0, 20));
-            droneModelService.addDTO(new DroneModelDTO("DJI Agras T20P", "DJI", 20.0, 15));
+           // droneModelService.addDTO(new DroneModelDTO("DJI Agras T40", "DJI", 40.0, 20));
+            //droneModelService.addDTO(new DroneModelDTO("DJI Agras T20P", "DJI", 20.0, 15));
 
             //insertar drones fisico
-            droneService.addDTO(new DroneDTO("SN-001", 1L)); // Drone libre
-            Drone droneOcupado = droneService.addDTO(new DroneDTO("SN-002", 2L)); // Drone para Luis
+          //  droneService.addDTO(new DroneDTO("SN-001", 1L)); // Drone libre
+            //Drone droneOcupado = droneService.addDTO(new DroneDTO("SN-002", 2L)); // Drone para Luis
 
             // vincular el dron a la reserva (ID 2 de Luis Miguel)
            /* Reservation luisReserva = reservationService.findById(2L);
@@ -71,19 +71,21 @@ public class SeedAirApplication {
             }*/
 
             // Drone en mantenimiento (Vínculado al T40 - ID 1)
-            Drone droneManto = droneService.addDTO(new DroneDTO("SN-MANTO-01", 1L));
-            droneManto.setCurrentStatus("MAINTENANCE");
-            droneRepository.save(droneManto);
+            //Drone droneManto = droneService.addDTO(new DroneDTO("SN-MANTO-01", 1L));
+            //droneManto.setCurrentStatus("MAINTENANCE");
+            //droneRepository.save(droneManto);
 
             // Drone inactivo/fuera de servicio (Vínculado al T20P - ID 2)
-            Drone droneInactivo = droneService.addDTO(new DroneDTO("SN-OFF-99", 2L));
-            droneInactivo.setCurrentStatus("INACTIVE");
-            droneRepository.save(droneInactivo);
+           // Drone droneInactivo = droneService.addDTO(new DroneDTO("SN-OFF-99", 2L));
+           // droneInactivo.setCurrentStatus("INACTIVE");
+           // droneRepository.save(droneInactivo);
 
             // Drone nuevo en revisión técnica (Vínculado al T40 - ID 1)
-            Drone droneRevision = droneService.addDTO(new DroneDTO("SN-CHECK-05", 1L));
-            droneRevision.setCurrentStatus("MAINTENANCE");
-            droneRepository.save(droneRevision);
+           // Drone droneRevision = droneService.addDTO(new DroneDTO("SN-CHECK-05", 1L));
+           // droneRevision.setCurrentStatus("MAINTENANCE");
+           // droneRepository.save(droneRevision);
+
+
 
             customerService.add(new Customer(
                     null, "Bruno", "Guerrero", 999666333, userService.findById(1L), null,

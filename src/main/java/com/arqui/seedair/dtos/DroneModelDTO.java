@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DroneModelDTO {
 
-    private String name;
     private String brand;
+    private String modelName;
     private Double seedCapacityKg;
+    private Double coverageHectaresPerDay;
     private Integer autonomyMinutes;
+    private Double maxSpeedKmh;
 }
