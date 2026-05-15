@@ -84,14 +84,30 @@ public class SecurityConfiguration {
                         .requestMatchers(AUTH_WHITELIST).permitAll()
 
                         //permisos reservations
-                        .requestMatchers(HttpMethod.GET,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN","ROLE_USER")
+                        .requestMatchers(HttpMethod.GET,"/seedair/reservations/active/**").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers(HttpMethod.GET,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN","ROLE_ASSIST")
-                        .requestMatchers(HttpMethod.POST,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN","ROLE_USER")
+                        .requestMatchers(HttpMethod.POST,"/seedair/reservations/register**").hasAnyAuthority("ROLE_USER")
                         .requestMatchers(HttpMethod.DELETE,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN")
-                        //permisos parcelas
+                        //permisos parcels
                         .requestMatchers(HttpMethod.POST,"/seedair/parcels/register/**").hasAnyAuthority("ROLE_ADMIN","ROLE_USER")
-                        //agregando una nueva ruta para que cuando se descomente esto funcione la peticion de drones libres
-                        .requestMatchers("/seedair/drones/available").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                        //permisos reviews
+                        .requestMatchers(HttpMethod.POST,"/seedair/reviews/register/**").hasAnyAuthority("ROLE_ADMIN","ROLE_USER")
+                        //permisos drones
+                        .requestMatchers(HttpMethod.POST,"/seedair/drones/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/seedair/drones/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/seedair/drones/**").hasAnyAuthority("ROLE_ADMIN")
+                        //permisos maintenances
+                        .requestMatchers(HttpMethod.POST,"/seedair/maintenances/**").hasAnyAuthority("ROLE_ADMIN")
+                        //permisos operators
+                        .requestMatchers(HttpMethod.POST,"/seedair/operators/**").hasAnyAuthority("ROLE_ADMIN")
+                        //permisos payments
+                        .requestMatchers(HttpMethod.PUT,"/seedair/payments/**").hasAnyAuthority("ROLE_ADMIN")
+                        //permisos droneModels
+                        .requestMatchers(HttpMethod.POST,"/seedair/droneModel/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/seedair/droneModel/**").hasAnyAuthority("ROLE_ADMIN")
+                        //permisos customer
+                        .requestMatchers(HttpMethod.GET,"/seedair/customers/**").hasAnyAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
 
         );

@@ -8,5 +8,6 @@ public interface DroneModelService {
     public DroneModel addDroneModel(DroneModel droneModel);
     public DroneModelDTO addDTO(DroneModelDTO dto);
     void delete(Long id);
+    public DroneModel findById(Long id);
 
 }
