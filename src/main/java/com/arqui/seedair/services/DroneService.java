@@ -15,4 +15,5 @@ public interface DroneService {
     public Drone findById(Long id);
     public List<Drone> getDronesByStatus(String status);
     void delete(Long id);
+    public Drone listId(Long id);
 }
