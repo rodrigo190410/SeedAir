@@ -2,6 +2,7 @@ package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.OperatorRegisterDTO;
 import com.arqui.seedair.entities.Operator;
+import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.OperatorRepository;
 import com.arqui.seedair.services.OperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,8 @@ public class OperatorServiceImpl implements OperatorService {
 
     @Override
     public Operator findById(Long id) {
-        return operatorRepository.findById(id).get();
+        return operatorRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("El operator con ID " + id + " no existe."));
     }
 
     @Override

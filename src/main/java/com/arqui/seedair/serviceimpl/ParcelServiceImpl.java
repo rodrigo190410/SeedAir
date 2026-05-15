@@ -3,6 +3,7 @@ package com.arqui.seedair.serviceimpl;
 import com.arqui.seedair.dtos.ParcelDTO;
 import com.arqui.seedair.entities.Customer;
 import com.arqui.seedair.entities.Parcel;
+import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.CustomerRepository;
 import com.arqui.seedair.repositories.ParcelRepository;
 import com.arqui.seedair.services.ParcelService;
@@ -24,7 +25,8 @@ public class ParcelServiceImpl implements ParcelService{
 
     @Override
     public Parcel findById(Long id) {
-        return parcelRepository.findById(id).get();
+        return parcelRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("La parcela con ID " + id + " no existe."));
     }
 
 

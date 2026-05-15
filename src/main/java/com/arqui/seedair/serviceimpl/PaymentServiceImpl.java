@@ -2,6 +2,7 @@ package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.PaymentUpdateDTO;
 import com.arqui.seedair.entities.Payment;
+import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.PaymentRepository;
 import com.arqui.seedair.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment findById(Long id) {
-        return paymentRepository.findById(id).get();
+        return paymentRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("La parcela con ID " + id + " no existe."));
     }
 
     @Override
@@ -29,7 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment foundPayment = findById(paymentUpdate.getId());
         foundPayment.setPaymentStatus(paymentUpdate.getPaymentStatus());
-        foundPayment.setPaymentMethod(paymentUpdate.getPaymentMethod());
+        //foundPayment.setPaymentMethod(paymentUpdate.getPaymentMethod());
 
         paymentRepository.save(foundPayment);
         return paymentUpdate;

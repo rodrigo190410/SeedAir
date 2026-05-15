@@ -9,6 +9,7 @@ import java.util.List;
 public interface ReservationService {
     public Reservation add(Reservation reservation);
     public List<Reservation> listAll();
+    public List<ReservationResponseDTO> listReservations();
     public List<ReservationRangeDateDTO> listByReservationRangeDTO(LocalDate startFilter, LocalDate endFilter);
     public List<Reservation> listByCustomerName(String name);
     public List<ReservationByCustomerNameDTO> listReservationByCustomerDTO(String name);

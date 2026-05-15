@@ -56,7 +56,8 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     public Drone findById(Long id) {
-        return droneRepository.findById(id).orElse(null);
+        return droneRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("El dron con ID " + id + " no existe."));
     }
 
     @Override

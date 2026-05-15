@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class PaymentUpdateDTO {
     private Long id;
     private String paymentStatus;
-    private String paymentMethod;
+    //private String paymentMethod;
 }
