@@ -9,6 +9,8 @@ import com.arqui.seedair.services.DroneModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class DroneModelServiceImpl implements DroneModelService {
 
@@ -37,5 +39,13 @@ public class DroneModelServiceImpl implements DroneModelService {
         );
         droneModelRepository.save(droneModel);
         return dto;
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (!droneModelRepository.existsById(id)) {
+            throw new NoSuchElementException("No se encontro el drone con ese id:" + id);
+        }
+        droneModelRepository.deleteById(id);
     }
 }
