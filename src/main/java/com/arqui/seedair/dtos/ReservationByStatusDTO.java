@@ -13,5 +13,5 @@ public class ReservationByStatusDTO {
     private LocalDate scheduledStartDate;
     private LocalDate scheduledEndDate;
     private String customerName;
-    private String status;
+    private Boolean isActive;
 }

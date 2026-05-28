@@ -2,6 +2,7 @@ package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.*;
 import com.arqui.seedair.entities.*;
+import com.arqui.seedair.exceptions.InvalidDataRangeException;
 import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.*;
 import com.arqui.seedair.services.CustomerService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,6 +26,8 @@ public class ReservationServiceImpl implements ReservationService {
     ReservationRepository reservationRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    CustomerService customerService;
     @Autowired
     PaymentRepository paymentRepository;
     @Autowired
@@ -51,7 +55,7 @@ public class ReservationServiceImpl implements ReservationService {
             ReservationResponseDTO dto = new ReservationResponseDTO(
                     r.getScheduledStartDate(),
                     r.getTotalAmount(),
-                    r.getStatus(), r.getCustomer().getId(),
+                    r.getIsActive(), r.getCustomer().getId(),
                     r.getParcel().getId()
             );
             newList.add(dto);
@@ -68,7 +72,7 @@ public class ReservationServiceImpl implements ReservationService {
 
             reservationRangeDateDTOList.add(new ReservationRangeDateDTO(
                     r.getId(), r.getScheduledStartDate(), r.getHectares(),r.getTotalAmount(),
-                    r.getStatus()
+                    r.getIsActive()
             ));
         }
 
@@ -101,7 +105,7 @@ public class ReservationServiceImpl implements ReservationService {
             if (reservationRegisterDTO.getParcelId() == null ||
                     reservationRegisterDTO.getOperatorId() == null ||
                     reservationRegisterDTO.getDroneId() == null) {
-                throw new IllegalArgumentException("No se puede registrar: La parcela, el operador y dron son obligatorios.");
+                throw new ResourceNotFoundException("No se puede registrar: La parcela, el operador y dron son obligatorios.");
             }
 
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -117,27 +121,45 @@ public class ReservationServiceImpl implements ReservationService {
 
 
 
-            //Añadir validacion si hay operador disponible
             Operator operator = operatorRepository.findById(reservationRegisterDTO.getOperatorId()).get();
-            //Añadir validacion si hay dron disponible
             Drone drone = droneRepository.findById(reservationRegisterDTO.getDroneId()).get();
 
-            if (operator.getAvailabilityStatus()==false || !operator.getAvailabilityStatus()){
-                throw new IllegalStateException(
+            if (operator.getAvailabilityStatus()==false){
+                throw new InvalidDataRangeException(
                         "No se puede registrar la reserva: El operador seleccionado no se encuentra disponible."
                 );
             }
 
             if (!"ACTIVE".equals(drone.getCurrentStatus())){
-                throw new IllegalStateException(
+                throw new InvalidDataRangeException(
                         "No se puede registrar la reserva: El dron seleccionado no se encuentra disponible."
                 );
             }
-            Double totalAmount= hectares*ratePerHectare;
+
+            LocalDate startDate = reservationRegisterDTO.getScheduledStartDate();
+            LocalDate endDate = reservationRegisterDTO.getScheduledEndDate();
+            long cantDays = ChronoUnit.DAYS.between(startDate, endDate);
+            if (cantDays<0){
+                throw new InvalidDataRangeException("La fecha de fin no puede ser anterior a la de inicio");
+            }
+            if (cantDays == 0){
+                throw new InvalidDataRangeException("Mínimo debe realizar una reserva por un día");
+            }
+            Double totalAmount= hectares*ratePerHectare*cantDays;
+            List<Customer> customerList = customerService.listAll();
+            for (Customer c: customerList){
+                for (Reservation r: c.getReservations()){
+                    if (r.getIsActive()){
+                        if(!startDate.isAfter(r.getScheduledStartDate()) && !endDate.isBefore(r.getScheduledEndDate())){
+                            throw new InvalidDataRangeException("Ya existe una reserva registrada dentro de estas fechas");
+                        }
+                    }
+                }
+            }
 
             Reservation newReservation = new Reservation(
                     null, reservationRegisterDTO.getScheduledStartDate(), reservationRegisterDTO.getScheduledEndDate(),
-                    hectares, ratePerHectare,totalAmount, "PENDIENTE", null,
+                    hectares, ratePerHectare,totalAmount, true, null,
                     new ArrayList<>(), customer, parcel, operator, drone
             );
 
@@ -162,18 +184,18 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> listByStatus(String status) {
-        return reservationRepository.findByStatus(status);
+    public List<Reservation> listByStatus(Boolean isActive) {
+        return reservationRepository.findByIsActive(isActive);
     }
 
     @Override
-    public List<ReservationByStatusDTO> listByStatusDTO(String status) {
-        List<Reservation> reservationList = listByStatus(status);
+    public List<ReservationByStatusDTO> listByStatusDTO(Boolean isActive) {
+        List<Reservation> reservationList = listByStatus(isActive);
         List<ReservationByStatusDTO> listDto = new ArrayList<>();
         for (Reservation r:reservationList){
             listDto.add(new ReservationByStatusDTO(
                     r.getScheduledStartDate(), r.getScheduledEndDate(),
-                    r.getCustomer().getFirstName(), r.getStatus()
+                    r.getCustomer().getFirstName(), r.getIsActive()
             ));
         }
         return listDto;
@@ -182,11 +204,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public SetReservationStatusDTO updateStatus(SetReservationStatusDTO updatedStatus) {
         Reservation foundReservation = findById(updatedStatus.getId());
-        foundReservation.setStatus(updatedStatus.getStatus());
+        foundReservation.setIsActive(updatedStatus.getIsActive());
         Reservation savedReservation = reservationRepository.save(foundReservation);
         SetReservationStatusDTO newDTO = new SetReservationStatusDTO();
         newDTO.setId(savedReservation.getId());
-        newDTO.setStatus(savedReservation.getStatus());
+        newDTO.setIsActive(savedReservation.getIsActive());
         newDTO.setCustomerName(savedReservation.getCustomer().getFirstName());
         newDTO.setScheduledStartDate(savedReservation.getScheduledStartDate());
 

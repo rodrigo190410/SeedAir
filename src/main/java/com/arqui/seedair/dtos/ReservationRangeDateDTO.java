@@ -15,6 +15,6 @@ public class ReservationRangeDateDTO {
     private LocalDate scheduledStartDate;
     private Double hectares;
     private Double totalAmount;
-    private String status; // PENDING, ON GOING, CANCELLED
+    private Boolean isActive;
 
 }

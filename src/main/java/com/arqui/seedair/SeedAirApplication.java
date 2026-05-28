@@ -26,41 +26,28 @@ public class SeedAirApplication {
 
     @Bean
     public CommandLineRunner startConfiguration(
-            @Autowired
             ReservationService reservationService,
-            @Autowired
             CustomerService customerService,
-            @Autowired
             UserService userService,
-            @Autowired
             ParcelService parcelService,
-            @Autowired
             AuthorityService authorityService,
-            @Autowired
             DroneModelService droneModelService,
-            @Autowired
             DroneService droneService,
-            @Autowired
             DroneRepository droneRepository,
-            @Autowired
             ReviewService reviewService,
-            @Autowired
             OperatorService operatorService,
-            @Autowired
             MaintenanceService maintenanceService,
-            @Autowired
             PaymentService paymentService
     ) {
         return args -> {
 
             Authority authority1 = authorityService.add(new Authority(null, "ROLE_ADMIN", null));
             Authority authority2 = authorityService.add(new Authority(null, "ROLE_USER", null));
-            Authority authority3 = authorityService.add(new Authority(null, "ROLE_ASSIST", null));
 
             //Data de prueba
             userService.addDTO(new UserDTO(null, "brunocustomer", "pass", "ROLE_USER"));
             userService.addDTO(new UserDTO(null, "luismanager", "pass", "ROLE_ADMIN"));
-            userService.addDTO(new UserDTO(null, "adrianamanager", "pass", "ROLE_ASSIST"));
+            userService.addDTO(new UserDTO(null, "adrianamanager", "pass", "ROLE_ADMIN"));
 
             //Data de prueba de modelos de drones usando DTO
             droneModelService.addDroneModel(new DroneModel(null, "DJI", "DJI Agras T40",
@@ -157,7 +144,7 @@ public class SeedAirApplication {
             reservationService.add(new Reservation(
                     null, LocalDate.of(2026, 05, 16),
                     LocalDate.of(2026, 05, 16),
-                    1.5, 75.0, 112.5, "PENDIENTE", null, null, customerService.findById(1L),
+                    1.5, 75.0, 112.5, true, null, null, customerService.findById(1L),
                     parcelService.findById(1L), operatorService.findById(1L), droneService.findById(1L)
             ));
 

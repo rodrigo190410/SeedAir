@@ -61,8 +61,8 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public List<Drone> getDronesByStatus(String status) {
-        return droneRepository.findByCurrentStatus(status);
+    public List<Drone> getDronesByStatus(Boolean isActive) {
+        return droneRepository.findByCurrentStatus(isActive);
     }
 
     @Override

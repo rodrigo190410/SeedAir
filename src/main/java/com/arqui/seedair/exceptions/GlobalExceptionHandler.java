@@ -1,37 +1,65 @@
 package com.arqui.seedair.exceptions;
 
-
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(IncompleteDataException.class)
+    @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+    public ErrorMessage incompleteDataException(IncompleteDataException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_ACCEPTABLE.value(),
+                "IncompleteDataException",
+                e.getMessage(),
+                request.getDescription(false),
+                LocalDateTime.now()
+        );
+    }
+
+
+    @ExceptionHandler(InvalidDataRangeException.class)
+    @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+    public ErrorMessage invalidDataRangeException(InvalidDataRangeException e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_ACCEPTABLE.value(),
+                "InvalidDataRangeException",
+                e.getMessage(),
+                request.getDescription(false),
+                LocalDateTime.now()
+        );
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorMessage> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ErrorMessage notFoundException(ResourceNotFoundException e, WebRequest request) {
+        return new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now(),
-                ex.getMessage(),
-                request.getDescription(false));
-
-        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+                "ResourceNotFoundException",
+                e.getMessage(),
+                request.getDescription(false),
+                LocalDateTime.now()
+        );
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                LocalDateTime.now(),
-                "Ha ocurrido un error interno",
-                ex.getMessage());
 
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(KeyRepeatedDataExeception.class)
+    @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+    public ErrorMessage notFoundException(KeyRepeatedDataExeception e, WebRequest request) {
+        return new ErrorMessage(
+                HttpStatus.NOT_ACCEPTABLE.value(),
+                "KeyRepeatedDataExeception",
+                e.getMessage(),
+                request.getDescription(false),
+                LocalDateTime.now()
+        );
     }
+
+
 }

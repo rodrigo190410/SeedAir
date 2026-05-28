@@ -12,10 +12,10 @@ public interface DroneRepository extends JpaRepository<Drone, Long> {
 
     @Query("SELECT new com.arqui.seedair.dtos.DroneAvailableDTO(m.modelName, m.brand, m.seedCapacityKg, m.autonomyMinutes) " +
             "FROM Drone d JOIN d.droneModel m " +
-            "WHERE d.id NOT IN (SELECT r.drone.id FROM Reservation r WHERE r.drone IS NOT NULL AND r.status IN ('PENDING', 'ON GOING'))")
+            "WHERE d.id NOT IN (SELECT r.drone.id FROM Reservation r WHERE r.isActive = true)")
     List<DroneAvailableDTO> findAvailableDronesForClient();
 
     //consulta para ver que drones estan en mantenimiento o inactivos sin importar si tienen reservas
-    @Query("SELECT d FROM Drone d WHERE d.currentStatus = :status")
-    List<Drone> findByCurrentStatus(@Param("status") String status);
+    @Query("SELECT d FROM Drone d WHERE d.currentStatus = :isActive")
+    List<Drone> findByCurrentStatus(@Param("isActive") Boolean isActive);
 }

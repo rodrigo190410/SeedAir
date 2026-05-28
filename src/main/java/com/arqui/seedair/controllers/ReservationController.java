@@ -53,13 +53,13 @@ public class ReservationController {
     }
 
     //Lista de reservas por estado -> para el admin
-    @GetMapping("/reservations/status/{status}") //http://localhost:8080/seedair/reservations/status/PENDING
-    public ResponseEntity<List<ReservationByStatusDTO>> listReservationByStatus(@PathVariable String status){
-        List<ReservationByStatusDTO> reservationByStatusList = reservationService.listByStatusDTO(status);
+    @GetMapping("/reservations/status/{isActive}") //http://localhost:8080/seedair/reservations/status/isActive
+    public ResponseEntity<List<ReservationByStatusDTO>> listReservationByStatus(@PathVariable Boolean isActive){
+        List<ReservationByStatusDTO> reservationByStatusList = reservationService.listByStatusDTO(isActive);
         return new ResponseEntity<>(reservationByStatusList, HttpStatus.OK);
     }
 
-    //Actualizar estado de una reserva -> para el asistente
+    //Actualizar estado de una reserva -> para el admin
     @PutMapping("/reservations/updated_status") // http://localhost:8080/seedair/reservations/updated_status
     public ResponseEntity<SetReservationStatusDTO> updateStatus (@RequestBody SetReservationStatusDTO updatedStatus){
         SetReservationStatusDTO newStatus = reservationService.updateStatus(updatedStatus);
@@ -67,7 +67,7 @@ public class ReservationController {
     }
 
 
-    //Lista las reservas activas por un username -> para el cliente
+    //Lista las reservas activas por un username -> para el admin
     @GetMapping("/reservations/active")// http://localhost:8080/seedair/reservations/active
     public ResponseEntity<List<Reservation>> getActiveReservationsByUsername(Authentication authentication){
         List<Reservation> actives = reservationService.getReservationsByUsername(authentication.getName());

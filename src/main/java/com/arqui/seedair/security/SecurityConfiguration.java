@@ -86,7 +86,7 @@ public class SecurityConfiguration {
                         //permisos reservations
                         .requestMatchers(HttpMethod.GET,"/seedair/reservations/active/**").hasAnyAuthority("ROLE_USER")
                         .requestMatchers(HttpMethod.GET,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.PUT,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN","ROLE_ASSIST")
+                        .requestMatchers(HttpMethod.PUT,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST,"/seedair/reservations/register**").hasAnyAuthority("ROLE_USER")
                         .requestMatchers(HttpMethod.DELETE,"/seedair/reservations/**").hasAnyAuthority("ROLE_ADMIN")
                         //permisos parcels
@@ -99,11 +99,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE,"/seedair/drones/**").hasAnyAuthority("ROLE_ADMIN")
                         //permisos maintenances
                         .requestMatchers(HttpMethod.POST,"/seedair/maintenances/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.PUT,"/seedair/maintenances/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ASSIST")
+                        .requestMatchers(HttpMethod.PUT,"/seedair/maintenances/**").hasAnyAuthority("ROLE_ADMIN")
                         //permisos operators
                         .requestMatchers(HttpMethod.POST,"/seedair/operators/**").hasAnyAuthority("ROLE_ADMIN")
                         //permisos payments
-                        .requestMatchers(HttpMethod.PUT,"/seedair/payments/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_ASSIST")
+                        .requestMatchers(HttpMethod.PUT,"/seedair/payments/**").hasAnyAuthority("ROLE_ADMIN")
                         //permisos droneModels
                         .requestMatchers(HttpMethod.POST,"/seedair/droneModel/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/seedair/droneModel/**").hasAnyAuthority("ROLE_ADMIN")
