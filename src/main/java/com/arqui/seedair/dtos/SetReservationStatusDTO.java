@@ -13,6 +13,6 @@ public class SetReservationStatusDTO {
     private Long id;
     private String customerName;
     private LocalDate scheduledStartDate;
-    private  String status;
+    private Boolean isActive;
 
 }

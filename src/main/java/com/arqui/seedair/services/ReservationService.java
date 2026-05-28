@@ -15,8 +15,8 @@ public interface ReservationService {
     public List<ReservationByCustomerNameDTO> listReservationByCustomerDTO(String name);
     public ReservationRegisterDTO registerReservation(ReservationRegisterDTO reservationRegisterDTO);
     public Reservation findById(Long id);
-    public List<Reservation> listByStatus(String status);
-    public List<ReservationByStatusDTO> listByStatusDTO(String status);
+    public List<Reservation> listByStatus(Boolean isActive);
+    public List<ReservationByStatusDTO> listByStatusDTO(Boolean isActive);
     public SetReservationStatusDTO updateStatus(SetReservationStatusDTO updatedStatus);
 
     List<Reservation> getReservationsByUsername(String username);

@@ -27,9 +27,9 @@ public class DroneController {
         return new ResponseEntity<>(drones, HttpStatus.OK);
     }
 
-    @GetMapping("/status/{status}") // http://localhost:8080/seedair/drones/status/MAINTENANCE o INACTIVE
-    public ResponseEntity<List<Drone>> getDroneByStatus(@PathVariable String status) {
-        List<Drone> drones = droneService.getDronesByStatus(status);
+    @GetMapping("/status/{isActive}") // http://localhost:8080/seedair/drones/status/MAINTENANCE o INACTIVE
+    public ResponseEntity<List<Drone>> getDroneByStatus(@PathVariable Boolean isActive) {
+        List<Drone> drones = droneService.getDronesByStatus(isActive);
         return new ResponseEntity<>(drones, HttpStatus.OK);
     }
 

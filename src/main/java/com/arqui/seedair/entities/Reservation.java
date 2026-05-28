@@ -23,7 +23,7 @@ public class Reservation {
     private Double hectares;
     private Double ratePerHectare;
     private Double totalAmount;
-    private String status;
+    private Boolean isActive;
     //->review
     @JsonIgnore
     @OneToOne(mappedBy = "reservation")
