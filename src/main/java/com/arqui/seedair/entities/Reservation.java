@@ -30,8 +30,8 @@ public class Reservation {
     private Review review;
     //->payment
     @JsonIgnore
-    @OneToMany(mappedBy = "reservation", fetch = FetchType.EAGER)
-    private List<Payment> payments;
+    @OneToOne(mappedBy = "reservation")
+    private Payment payment;
     //<-customer
     @ManyToOne
     @JoinColumn(name = "customer_id")

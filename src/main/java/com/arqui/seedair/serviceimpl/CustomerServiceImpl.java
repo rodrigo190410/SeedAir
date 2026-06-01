@@ -5,6 +5,8 @@ import com.arqui.seedair.dtos.CustomerSummaryDTO;
 import com.arqui.seedair.entities.Authority;
 import com.arqui.seedair.entities.Customer;
 import com.arqui.seedair.entities.User;
+import com.arqui.seedair.exceptions.InvalidDataRangeException;
+import com.arqui.seedair.exceptions.KeyRepeatedDataExeception;
 import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.CustomerRepository;
 import com.arqui.seedair.repositories.UserRepository;
@@ -56,12 +58,33 @@ public class CustomerServiceImpl implements CustomerService {
     }
     @Override
     public CustomerDTO addDTO(CustomerDTO customerDTO) {
-        List<Authority> authorityList = authoritiesFromString("ROLE_USER");
+        List<Authority> authorityList = authoritiesFromString("CUSTOMER");
+
+        List<User> users = userRepository.findAll();
+        List<Customer> customerList = listAll();
+        for (User u: users){
+            if (customerDTO.getUsername().equals(u.getUsername())){
+                throw new KeyRepeatedDataExeception("El username: " + u.getUsername() +" ya existe");
+            }
+        }
+
+
+        if (customerDTO.getPhone() == null || customerDTO.getPhone().toString().length() != 9){
+            throw new InvalidDataRangeException("El número de teléfono debe tener 9 dígitos");
+        }
+
+        for (Customer c: customerList){
+            if (customerDTO.getPhone().equals(c.getPhone())){
+                throw new KeyRepeatedDataExeception("El número de teléfono: " + c.getPhone() +" ya está registrado");
+            }
+        }
 
         User newUser = new User(null, customerDTO.getUsername(),
                 new BCryptPasswordEncoder().encode(customerDTO.getPassword()), authorityList, null);
 
         userRepository.save(newUser);
+
+
 
         Customer newCustomer = new Customer(
                 null, customerDTO.getFirstName(), customerDTO.getLastName(),

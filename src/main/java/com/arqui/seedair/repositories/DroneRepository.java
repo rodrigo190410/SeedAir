@@ -10,7 +10,10 @@ import java.util.List;
 
 public interface DroneRepository extends JpaRepository<Drone, Long> {
 
-    @Query("SELECT new com.arqui.seedair.dtos.DroneAvailableDTO(m.modelName, m.brand, m.seedCapacityKg, m.autonomyMinutes) " +
+    boolean existsByCode(String code);
+    boolean existsBySerialNumber(String serialNumber);
+
+    @Query("SELECT new com.arqui.seedair.dtos.DroneAvailableDTO(m.modelName, m.droneBrand.id, m.seedCapacityKg, m.autonomyMinutes) " +
             "FROM Drone d JOIN d.droneModel m " +
             "WHERE d.id NOT IN (SELECT r.drone.id FROM Reservation r WHERE r.isActive = true)")
     List<DroneAvailableDTO> findAvailableDronesForClient();

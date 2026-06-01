@@ -3,23 +3,27 @@ package com.arqui.seedair.serviceimpl;
 import com.arqui.seedair.dtos.DroneDTO;
 import com.arqui.seedair.dtos.DroneModelDTO;
 import com.arqui.seedair.entities.Drone;
+import com.arqui.seedair.entities.DroneBrand;
 import com.arqui.seedair.entities.DroneModel;
+import com.arqui.seedair.exceptions.IncompleteDataException;
+import com.arqui.seedair.exceptions.InvalidDataRangeException;
+import com.arqui.seedair.exceptions.KeyRepeatedDataExeception;
 import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.DroneModelRepository;
+import com.arqui.seedair.services.DroneBrandService;
 import com.arqui.seedair.services.DroneModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class DroneModelServiceImpl implements DroneModelService {
-
-
     @Autowired
-    private DroneModelRepository droneModelRepository;
-
-
+    DroneModelRepository droneModelRepository;
+    @Autowired
+    DroneBrandService droneBrandService;
     @Override
     public DroneModel addDroneModel(DroneModel droneModel) {
         return droneModelRepository.save(droneModel);
@@ -28,16 +32,36 @@ public class DroneModelServiceImpl implements DroneModelService {
     @Override
     public DroneModelDTO addDTO(DroneModelDTO dto) {
 
+        List<DroneModel> droneModelList = droneModelRepository.findAll();
+
+        if (dto.getModelName() == null || dto.getModelName().isBlank()) {
+            throw new IncompleteDataException("El nombre del modelo es obligatorio");
+        }
+
+        if (dto.getSeedCapacityKg() <= 0) {
+            throw new InvalidDataRangeException("La capacidad debe ser mayor a 0");
+        }
+
+        for (DroneModel d: droneModelList){
+            if (dto.getModelName().equals(d.getModelName())){
+                throw new KeyRepeatedDataExeception("El modelo: " + dto.getModelName() + " ya está registrado");
+            }
+        }
+
+        DroneBrand droneBrandId = droneBrandService.findById(dto.getDroneBrandId());
+        if (droneBrandId == null){
+            throw new ResourceNotFoundException("El dron con el id: " + dto.getDroneBrandId() + " no existe");
+        }
         DroneModel droneModel = new DroneModel(
                 null,
-                dto.getBrand(),
                 dto.getModelName(),
                 dto.getSeedCapacityKg(),
                 dto.getCoverageHectaresPerDay(),
                 dto.getAutonomyMinutes(),
                 dto.getMaxSpeedKmh(),
-                null
-        );
+                null,
+                droneBrandId
+                );
         droneModelRepository.save(droneModel);
         return dto;
     }

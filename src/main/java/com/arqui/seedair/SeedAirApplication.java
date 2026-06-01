@@ -33,25 +33,28 @@ public class SeedAirApplication {
             AuthorityService authorityService,
             DroneModelService droneModelService,
             DroneService droneService,
-            DroneRepository droneRepository,
             ReviewService reviewService,
             OperatorService operatorService,
             MaintenanceService maintenanceService,
-            PaymentService paymentService
+            PaymentService paymentService,
+            DroneBrandService droneBrandService
     ) {
         return args -> {
 
-            Authority authority1 = authorityService.add(new Authority(null, "ROLE_ADMIN", null));
-            Authority authority2 = authorityService.add(new Authority(null, "ROLE_USER", null));
+            Authority authority1 = authorityService.add(new Authority(null, "ADMIN", null));
+            Authority authority2 = authorityService.add(new Authority(null, "CUSTOMER", null));
 
             //Data de prueba
-            userService.addDTO(new UserDTO(null, "brunocustomer", "pass", "ROLE_USER"));
-            userService.addDTO(new UserDTO(null, "luismanager", "pass", "ROLE_ADMIN"));
-            userService.addDTO(new UserDTO(null, "adrianamanager", "pass", "ROLE_ADMIN"));
-
+            userService.addDTO(new UserDTO(null, "brunocustomer", "pass", "CUSTOMER"));
+            userService.addDTO(new UserDTO(null, "luismanager", "pass", "ADMIN"));
+            userService.addDTO(new UserDTO(null, "adrianamanager", "pass", "ADMIN"));
+            //Brands
+            droneBrandService.add(new DroneBrand(null, "DJI", null));
+            droneBrandService.add(new DroneBrand(null, "Parrot", null));
+            droneBrandService.add(new DroneBrand(null, "Potensic", null));
             //Data de prueba de modelos de drones usando DTO
-            droneModelService.addDroneModel(new DroneModel(null, "DJI", "DJI Agras T40",
-                    40.0, 20.0, 180, 30.0, null
+            droneModelService.addDroneModel(new DroneModel(null, "DJI Agras T40",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L)
             ));
 //            droneModelService.addDTO(new DroneModelDTO("DJI Agras T20P", "DJI", 20.0, 15));
 
@@ -180,7 +183,7 @@ public class SeedAirApplication {
 
 
             paymentService.add(new Payment(
-                    null, LocalDate.of(2026, 05, 17), 112.50, "AL CONTADO",
+                    null, LocalDate.of(2026, 05, 17), 112.50, "CONTADO",
                     "COMPLETO", "OP-1", reservationService.findById(1L)
             ));
 //            paymentService.add(new Payment(

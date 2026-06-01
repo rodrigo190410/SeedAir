@@ -160,7 +160,7 @@ public class ReservationServiceImpl implements ReservationService {
             Reservation newReservation = new Reservation(
                     null, reservationRegisterDTO.getScheduledStartDate(), reservationRegisterDTO.getScheduledEndDate(),
                     hectares, ratePerHectare,totalAmount, true, null,
-                    new ArrayList<>(), customer, parcel, operator, drone
+                    null, customer, parcel, operator, drone
             );
 
             reservationRepository.save(newReservation);

@@ -15,6 +15,5 @@ public class DroneDTO {
     private String code;
     private LocalDate acquisitionDate;
     private String serialNumber;
-    private Long droneModelId; //
-   // private String currentStatus;// ID para vincular el dron a su modelo
+    private Long droneModelId;
 }
