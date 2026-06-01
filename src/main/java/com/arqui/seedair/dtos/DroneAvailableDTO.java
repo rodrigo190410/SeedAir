@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DroneAvailableDTO {
     private String modelName;
-    private String brand;
+    private Long droneBrandId;
     private Double seedCapacityKg; // Capacidad de semillas
     private Integer autonomyMinutes; // Tiempo de vuelo
     //private String status;

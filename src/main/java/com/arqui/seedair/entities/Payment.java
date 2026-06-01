@@ -23,7 +23,6 @@ public class Payment {
     private String operationCode;
     //<-reservation
     @ManyToOne
-    @JoinColumn(name = "reservation_id")
+    @JoinColumn(name = "reservation_id", unique = true, nullable = false)
     private Reservation reservation;
-
 }

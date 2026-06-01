@@ -15,25 +15,25 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/seedair/drones") // http://localhost:8080/seedair
+@RequestMapping("/seedair") // http://localhost:8080/seedair
 public class DroneController {
 
     @Autowired
     private DroneService droneService;
 
-    @GetMapping("/available") // http://localhost:8080/seedair/drones/available
+    @GetMapping("/drones/available") // http://localhost:8080/seedair/drones/available
     public ResponseEntity<List<DroneAvailableDTO>> getAvailableDrones() {
         List<DroneAvailableDTO> drones = droneService.getAvailableDrones();
         return new ResponseEntity<>(drones, HttpStatus.OK);
     }
 
-    @GetMapping("/status/{isActive}") // http://localhost:8080/seedair/drones/status/MAINTENANCE o INACTIVE
+    @GetMapping("/drones/status/{isActive}") // http://localhost:8080/seedair/drones/status/MAINTENANCE o INACTIVE
     public ResponseEntity<List<Drone>> getDroneByStatus(@PathVariable Boolean isActive) {
         List<Drone> drones = droneService.getDronesByStatus(isActive);
         return new ResponseEntity<>(drones, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}") // http://localhost:8080/seedair/drones/{id}
+    @GetMapping("/drones/{id}") // http://localhost:8080/seedair/drones/{id}
     public ResponseEntity<DroneDTO> getById(@PathVariable Long id){
         Drone drone = droneService.listId(id);
         ModelMapper m = new ModelMapper();
@@ -42,12 +42,12 @@ public class DroneController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PostMapping("/add")// http://localhost:8080/seedair/drones/add
+    @PostMapping("/drones/add")// http://localhost:8080/seedair/drones/add
     public ResponseEntity<DroneDTO> addDrone(@RequestBody DroneDTO drone) {
         return new ResponseEntity<>(droneService.addDTO(drone), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{id}") //http://localhost:8080/seedair/drones/delete/6
+    @DeleteMapping("/drones/delete/{id}") //http://localhost:8080/seedair/drones/delete/6
     public ResponseEntity<Void> deleteDrone(@PathVariable Long id) {
         droneService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

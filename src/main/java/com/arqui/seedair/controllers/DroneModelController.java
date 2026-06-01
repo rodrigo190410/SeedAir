@@ -13,18 +13,18 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/seedair/droneModel") // http://localhost:8080/seedair/droneModel
+@RequestMapping("/seedair") // http://localhost:8080/seedair
 public class DroneModelController {
 
     @Autowired
     DroneModelService droneModelService;
 
-    @PostMapping("/add") // http://localhost:8080/seedair/droneModel/add
+    @PostMapping("/droneModel/add") // http://localhost:8080/seedair/droneModel/add
     public ResponseEntity<DroneModelDTO> addDTO(@RequestBody DroneModelDTO droneModel) {
         return new ResponseEntity<>(droneModelService.addDTO(droneModel), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{id}") //http://localhost:8080/seedair/droneModel/delete/6
+    @DeleteMapping("/droneModel/delete/{id}") //http://localhost:8080/seedair/droneModel/delete/6
     public ResponseEntity<Drone> deleteDrone(@PathVariable Long id) {
         try{
             droneModelService.delete(id);

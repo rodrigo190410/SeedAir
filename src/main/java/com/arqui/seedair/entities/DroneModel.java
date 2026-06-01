@@ -17,7 +17,6 @@ public class DroneModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String brand;
     private String modelName;
     private Double seedCapacityKg;
     private Double coverageHectaresPerDay;
@@ -27,4 +26,8 @@ public class DroneModel {
     @JsonIgnore
     @OneToMany(mappedBy = "droneModel", fetch = FetchType.EAGER)
     private List<Drone> drones;
+    //<-DroneBrand
+    @ManyToOne
+    @JoinColumn(name = "droneBrand_id")
+    private DroneBrand droneBrand;
 }
