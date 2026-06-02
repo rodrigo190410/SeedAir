@@ -47,7 +47,7 @@ public class SeedAirApplication {
             //Data de prueba
             userService.addDTO(new UserDTO(null, "brunocustomer", "pass", "CUSTOMER"));
             userService.addDTO(new UserDTO(null, "luismanager", "pass", "ADMIN"));
-            userService.addDTO(new UserDTO(null, "adrianamanager", "pass", "ADMIN"));
+            userService.addDTO(new UserDTO(null, "adrianacustomer", "pass", "CUSTOMER"));
             //Brands
             droneBrandService.add(new DroneBrand(null, "DJI", null));
             droneBrandService.add(new DroneBrand(null, "Parrot", null));
@@ -93,10 +93,10 @@ public class SeedAirApplication {
 //                    null, "Luis Miguel", "Rojas", 123456789, userService.findById(2L), null,
 //                    null, null
 //            ));
-//            customerService.add(new Customer(
-//                    null, "Adriana", "Tapia", 987654321, userService.findById(3L), null,
-//                    null, null
-//            ));
+            customerService.add(new Customer(
+                    null, "Adriana", "Tapia", 987654321, userService.findById(3L), null,
+                    null, null
+            ));
             parcelService.add(new Parcel(null, "Cajarmaca - Sector Condorillo Alto", 2.5, -13.4589,
                     -76.1325, LocalDate.of(2026, 04, 30),
                     null, customerService.findById(1L)
@@ -133,7 +133,7 @@ public class SeedAirApplication {
 
             maintenanceService.add(new Maintenance(
                     null, LocalDate.of(2026, 05, 30), null,
-                    "SCHEDULED", "Revision semestral", 150.50, droneService.findById(1L)
+                    true, "Revision semestral", 150.50, droneService.findById(1L)
             ));
 //            maintenanceService.add(new Maintenance(
 //                    null, LocalDate.of(2026,05,19), null,

@@ -18,7 +18,7 @@ public class Maintenance {
     private Long id;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String status;
+    private Boolean isFinished;
     private String description;
     private Double cost;
     //<-drone

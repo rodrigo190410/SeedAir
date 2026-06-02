@@ -11,5 +11,4 @@ public class OperatorRegisterDTO {
     private String licenseCode;
     private String certificationLevel;
     private Integer experienceYears;
-    private Boolean availability;
 }
