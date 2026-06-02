@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MaintenanceRegisterDTO {
     private LocalDate startDate;
-    private String status;
     private String description;
     private Double cost;
     private Long droneId;

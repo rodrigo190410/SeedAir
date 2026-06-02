@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 public class DroneController {
 
     @Autowired
-    private DroneService droneService;
+    DroneService droneService;
 
     @GetMapping("/drones/available") // http://localhost:8080/seedair/drones/available
     public ResponseEntity<List<DroneAvailableDTO>> getAvailableDrones() {
