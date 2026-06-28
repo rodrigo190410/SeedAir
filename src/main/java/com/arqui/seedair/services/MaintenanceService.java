@@ -2,6 +2,7 @@ package com.arqui.seedair.services;
 
 import com.arqui.seedair.dtos.MaintenanceEndDateDTO;
 import com.arqui.seedair.dtos.MaintenanceRegisterDTO;
+import com.arqui.seedair.dtos.MaintenanceResponseDTO;
 import com.arqui.seedair.entities.Maintenance;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface MaintenanceService {
     public Maintenance findById(Long id);
     public MaintenanceEndDateDTO registerEndDate(MaintenanceEndDateDTO maintenanceEndDate);
     public List<Maintenance> listAll();
+    public List<MaintenanceResponseDTO>listMaintenances();
+    public void delete(Long id);
 }

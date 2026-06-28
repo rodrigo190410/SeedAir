@@ -15,6 +15,7 @@ import com.arqui.seedair.services.DroneModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -78,5 +79,39 @@ public class DroneModelServiceImpl implements DroneModelService {
     public DroneModel findById(Long id) {
         return droneModelRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("El modelo de dron con ID " + id + " no existe."));
+    }
+
+    @Override
+    public List<DroneModel> listAll() {
+        return droneModelRepository.findAll();
+    }
+
+    @Override
+    public List<DroneModelDTO> listDroneModels() {
+        List<DroneModel> drones = listAll();
+        List<DroneModelDTO> newList = new ArrayList<>();
+
+        for (DroneModel d:drones){
+            DroneModelDTO dto = new DroneModelDTO(d.getDroneBrand().getId(),d.getModelName(),
+                    d.getSeedCapacityKg(),d.getCoverageHectaresPerDay(),d.getAutonomyMinutes(),
+                    d.getMaxSpeedKmh());
+
+            newList.add(dto);
+        }
+
+        return newList;
+    }
+
+    @Override
+    public DroneModel update(DroneModel droneModel) {
+        DroneModel foundModel = findById(droneModel.getId());
+        foundModel.setModelName(droneModel.getModelName());
+        foundModel.setSeedCapacityKg(droneModel.getSeedCapacityKg());
+        foundModel.setCoverageHectaresPerDay(droneModel.getCoverageHectaresPerDay());
+        foundModel.setAutonomyMinutes(droneModel.getAutonomyMinutes());
+        foundModel.setMaxSpeedKmh(droneModel.getMaxSpeedKmh());
+
+        droneModelRepository.save(foundModel);
+        return droneModel;
     }
 }

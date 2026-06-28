@@ -130,7 +130,7 @@ public class ReservationServiceImpl implements ReservationService {
                 );
             }
 
-            if (!"ACTIVE".equals(drone.getCurrentStatus())){
+            if (!drone.getIsActive()){
                 throw new InvalidDataRangeException(
                         "No se puede registrar la reserva: El dron seleccionado no se encuentra disponible."
                 );
@@ -165,10 +165,10 @@ public class ReservationServiceImpl implements ReservationService {
 
             reservationRepository.save(newReservation);
 
-            LocalDate paymentDate = newReservation.getScheduledEndDate().plusDays(1);
+            LocalDate paymentDate = newReservation.getScheduledEndDate();
 
             Payment initialPayment = new Payment(
-                    null, paymentDate, totalAmount, "AL CONTADO", "PENDIENTE",
+                    null, paymentDate, totalAmount, "AL CONTADO", true,
                     null, newReservation
             );
             Payment savedPayment = paymentRepository.save(initialPayment);

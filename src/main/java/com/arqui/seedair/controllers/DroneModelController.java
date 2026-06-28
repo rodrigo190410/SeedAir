@@ -3,12 +3,14 @@ package com.arqui.seedair.controllers;
 
 import com.arqui.seedair.dtos.DroneModelDTO;
 import com.arqui.seedair.entities.Drone;
+import com.arqui.seedair.entities.DroneModel;
 import com.arqui.seedair.services.DroneModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -32,6 +34,18 @@ public class DroneModelController {
         } catch (NoSuchElementException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/droneModel")
+    public ResponseEntity<List<DroneModelDTO>> listDroneModels(){
+        List<DroneModelDTO> listModels = droneModelService.listDroneModels();
+        return new ResponseEntity<>(listModels, HttpStatus.OK);
+    }
+
+    @PutMapping("/droneModel/update")
+    public ResponseEntity<DroneModel> update(@RequestBody DroneModel droneModel){
+        DroneModel updatedModel = droneModelService.update(droneModel);
+        return new ResponseEntity<>(updatedModel, HttpStatus.OK);
     }
 
 

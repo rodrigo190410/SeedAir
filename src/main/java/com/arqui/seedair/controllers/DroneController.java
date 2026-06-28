@@ -27,12 +27,17 @@ public class DroneController {
         return new ResponseEntity<>(drones, HttpStatus.OK);
     }
 
-    @GetMapping("/drones/status/{isActive}") // http://localhost:8080/seedair/drones/status/MAINTENANCE o INACTIVE
-    public ResponseEntity<List<Drone>> getDroneByStatus(@PathVariable Boolean isActive) {
+    @GetMapping("/drones/status/{isActive}") // http://localhost:8080/seedair/drones/status/true
+    public ResponseEntity<List<Drone>> listDronesByStatus(@PathVariable Boolean isActive) {
         List<Drone> drones = droneService.getDronesByStatus(isActive);
         return new ResponseEntity<>(drones, HttpStatus.OK);
     }
 
+    @PutMapping("/drones/update")
+    public ResponseEntity<Drone>update(@RequestBody Drone drone){
+        Drone updatedDrone = droneService.update(drone);
+        return new ResponseEntity<>(updatedDrone, HttpStatus.OK);
+    }
     @GetMapping("/drones/{id}") // http://localhost:8080/seedair/drones/{id}
     public ResponseEntity<DroneDTO> getById(@PathVariable Long id){
         Drone drone = droneService.listId(id);

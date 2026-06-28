@@ -21,7 +21,7 @@ public class Drone {
     private String code;
     private String serialNumber;
     private LocalDate acquisitionDate;
-    private String currentStatus;
+    private Boolean isActive;
 
     //->reservation
     @JsonIgnore

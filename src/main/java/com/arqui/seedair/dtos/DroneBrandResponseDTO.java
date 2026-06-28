@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentUpdateDTO {
+public class DroneBrandResponseDTO {
     private Long id;
-    private Boolean isPending;
-    private String paymentMethod;
+    private String name;
 }

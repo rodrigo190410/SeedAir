@@ -19,7 +19,7 @@ public class Payment {
     private LocalDate paymentDate;
     private Double amount;
     private String paymentMethod;
-    private String paymentStatus;
+    private Boolean isPending;
     private String operationCode;
     //<-reservation
     @ManyToOne

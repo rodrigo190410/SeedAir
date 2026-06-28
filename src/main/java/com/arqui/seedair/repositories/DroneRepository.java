@@ -19,6 +19,6 @@ public interface DroneRepository extends JpaRepository<Drone, Long> {
     List<DroneAvailableDTO> findAvailableDronesForClient();
 
     //consulta para ver que drones estan en mantenimiento o inactivos sin importar si tienen reservas
-    @Query("SELECT d FROM Drone d WHERE d.currentStatus = :isActive")
-    List<Drone> findByCurrentStatus(@Param("isActive") Boolean isActive);
+    @Query("SELECT d FROM Drone d WHERE d.isActive = ?1")
+    List<Drone> findDronesByStatus( Boolean isActive);
 }
