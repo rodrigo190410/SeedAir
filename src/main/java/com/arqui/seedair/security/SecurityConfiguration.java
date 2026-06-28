@@ -32,7 +32,7 @@ public class SecurityConfiguration {
             // -- Registro para admin
             "/seedair/users/register/**",
             // -- Registro para clientes
-            "/seedair/customers/register/**",
+            "/seedair/customers/register/**",   
 
 
     };

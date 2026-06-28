@@ -71,7 +71,7 @@ public class SeedAirApplication {
 
             // Drone en mantenimiento (Vínculado al T40 - ID 1)
             droneService.addDrone(new Drone(null, "DRN-001",
-                    "SN-MANTO-01", LocalDate.of(2026, 03, 11), "ACTIVE", null,
+                    "SN-MANTO-01", LocalDate.of(2026, 03, 11), true, null,
                     null, droneModelService.findById(1L)
             ));
 
@@ -183,8 +183,8 @@ public class SeedAirApplication {
 
 
             paymentService.add(new Payment(
-                    null, LocalDate.of(2026, 05, 17), 112.50, "CONTADO",
-                    "COMPLETO", "OP-1", reservationService.findById(1L)
+                    null, LocalDate.of(2026, 05, 17), 112.50, "EFECTIVO",
+                    true, "OP-1", reservationService.findById(1L)
             ));
 //            paymentService.add(new Payment(
 //                    null, LocalDate.of(2026,05,19) , 250.0, "CRÉDITO",

@@ -50,7 +50,7 @@ public class DroneServiceImpl implements DroneService {
                 dto.getCode(),
                 dto.getSerialNumber(),
                 dto.getAcquisitionDate(),
-                "Activo",
+                true,
                 null,
                 null,
                 model
@@ -67,7 +67,18 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     public List<Drone> getDronesByStatus(Boolean isActive) {
-        return droneRepository.findByCurrentStatus(isActive);
+        return droneRepository.findDronesByStatus(isActive);
+    }
+
+    @Override
+    public Drone update(Drone drone) {
+        Drone foundDrone = findById(drone.getId());
+        foundDrone.setCode(drone.getCode());
+        foundDrone.setSerialNumber(drone.getSerialNumber());
+        foundDrone.setIsActive(drone.getIsActive());
+
+        droneRepository.save(foundDrone);
+        return drone;
     }
 
     @Override
@@ -81,7 +92,7 @@ public class DroneServiceImpl implements DroneService {
     @Override
     public Drone listId(Long id) {
         return  droneRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el Drone con el ID: + id"));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el Drone con el ID:" +id));
     }
 
 

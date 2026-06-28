@@ -14,6 +14,7 @@ public interface DroneService {
     public DroneDTO addDTO(DroneDTO dto);
     public Drone findById(Long id);
     public List<Drone> getDronesByStatus(Boolean isActive);
+    public Drone update(Drone drone);
     void delete(Long id);
     public Drone listId(Long id);
 }

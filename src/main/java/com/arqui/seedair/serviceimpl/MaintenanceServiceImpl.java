@@ -2,6 +2,7 @@ package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.MaintenanceEndDateDTO;
 import com.arqui.seedair.dtos.MaintenanceRegisterDTO;
+import com.arqui.seedair.dtos.MaintenanceResponseDTO;
 import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.entities.Maintenance;
 import com.arqui.seedair.exceptions.IncompleteDataException;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -80,4 +82,23 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     public List<Maintenance> listAll() {
         return maintenanceRepository.findAll();
     }
+
+    @Override
+    public List<MaintenanceResponseDTO> listMaintenances() {
+        List<Maintenance> maintenances = listAll();
+        List<MaintenanceResponseDTO> newList = new ArrayList<>();
+        for (Maintenance m: maintenances){
+            MaintenanceResponseDTO dto = new MaintenanceResponseDTO(m.getStartDate(),m.getEndDate(),
+                    m.getIsFinished(),m.getDescription(),m.getCost(),m.getDrone().getId());
+            newList.add(dto);
+        }
+        return newList;
+    }
+
+    @Override
+    public void delete(Long id) {
+        maintenanceRepository.deleteById(id);
+    }
+
+
 }
