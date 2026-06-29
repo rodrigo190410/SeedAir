@@ -32,4 +32,6 @@ public class Parcel {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    private Boolean isActive = true;
 }

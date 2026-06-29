@@ -93,9 +93,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"/seedair/reservations/register**").hasAnyAuthority("CUSTOMER")
                         .requestMatchers(HttpMethod.DELETE,"/seedair/reservations/**").hasAnyAuthority("ADMIN")
                         //permisos parcels
-                        .requestMatchers(HttpMethod.POST,"/seedair/parcels/register/**").hasAnyAuthority("ADMIN","CUSTOMER")
+                        .requestMatchers(HttpMethod.POST,"/seedair/parcels/**").hasAnyAuthority("ADMIN","CUSTOMER")
                         //permisos reviews
-                        .requestMatchers(HttpMethod.POST,"/seedair/reviews/register/**").hasAnyAuthority("ADMIN","CUSTOMER")
+                        .requestMatchers(HttpMethod.POST,"/seedair/reviews/**").hasAnyAuthority("ADMIN","CUSTOMER")
                         //permisos drones
                         .requestMatchers(HttpMethod.POST,"/seedair/drones/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/seedair/drones/**").hasAnyAuthority("ADMIN")
