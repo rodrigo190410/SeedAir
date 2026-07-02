@@ -20,14 +20,21 @@ public class ReservationController {
     @Autowired
     ReservationService reservationService;
 
+    //Lista de reservas por primer id de cliente -> para el cliente
+    @GetMapping("/reservations/list/{customerId}") // http://localhost:8080/seedair/reservations/list/{customerId}
+    public ResponseEntity<List<ReservationDTOByCustomerId>> listReservationsByCustomerId(@PathVariable Long customerId){
+        List<ReservationDTOByCustomerId> newList = reservationService.listReservationByCustomerId(customerId);
+        return new ResponseEntity<>(newList, HttpStatus.OK);
+    }
     //registrar una reserva -> para el cliente
     @PostMapping("/reservations/register") // http://localhost:8080/seedair/reservations/register
     public ResponseEntity<ReservationRegisterDTO> registerReservation(
             @RequestBody ReservationRegisterDTO reservationRegisterDTO
     ){
         ReservationRegisterDTO newRegister = reservationService.registerReservation(reservationRegisterDTO);
-        return new ResponseEntity<>(newRegister, HttpStatus.OK);
+        return new ResponseEntity<>(newRegister, HttpStatus.CREATED);
     }
+
     //Lista general de reservas -> admin
     @GetMapping("/reservations") // http://localhost:8080/seedair/reservations
     public ResponseEntity<List<ReservationResponseDTO>> listAll(){

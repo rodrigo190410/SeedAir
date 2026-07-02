@@ -23,7 +23,12 @@ public class Reservation {
     private Double hectares;
     private Double ratePerHectare;
     private Double totalAmount;
+
+    @Enumerated(EnumType.STRING)
+    private ReservationState state = ReservationState.PENDIENTE;
+
     private Boolean isActive;
+
     //->review
     @JsonIgnore
     @OneToOne(mappedBy = "reservation")
@@ -48,4 +53,12 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "drone_id")
     private Drone drone;
+
+
+    public enum ReservationState {
+        PENDIENTE,
+        FINALIZADO,
+        CANCELADO
+    }
+
 }

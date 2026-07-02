@@ -6,6 +6,7 @@ import com.arqui.seedair.exceptions.InvalidDataRangeException;
 import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.*;
 import com.arqui.seedair.services.CustomerService;
+import com.arqui.seedair.services.OperatorService;
 import com.arqui.seedair.services.ParcelService;
 import com.arqui.seedair.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class ReservationServiceImpl implements ReservationService {
     OperatorRepository operatorRepository;
     @Autowired
     DroneRepository droneRepository;
+    @Autowired
+    private OperatorService operatorService;
+
     @Override
     public Reservation add(Reservation reservation) {
         return reservationRepository.save(reservation);
@@ -159,7 +163,7 @@ public class ReservationServiceImpl implements ReservationService {
 
             Reservation newReservation = new Reservation(
                     null, reservationRegisterDTO.getScheduledStartDate(), reservationRegisterDTO.getScheduledEndDate(),
-                    hectares, ratePerHectare,totalAmount, true, null,
+                    hectares, ratePerHectare,totalAmount, Reservation.ReservationState.PENDIENTE , true, null,
                     null, customer, parcel, operator, drone
             );
 
@@ -235,6 +239,30 @@ public class ReservationServiceImpl implements ReservationService {
             throw new ResourceNotFoundException("No se encontró la reserva con id:" + id);
         }
         reservationRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ReservationDTOByCustomerId> listReservationByCustomerId(Long customerId) {
+        List<Reservation> customerReservationsActive = reservationRepository.findByIsActive(true);
+
+
+        List<ReservationDTOByCustomerId> customerReservationsToShow = customerReservationsActive.stream()
+                .filter(r -> r.getIsActive() != null && r.getCustomer().getId().equals(customerId))//pra que jale solo a los activos y del customer
+                .map(
+                        r->new ReservationDTOByCustomerId(
+                                r.getId(),
+                                r.getScheduledStartDate(),
+                                r.getScheduledEndDate(),
+                                r.getHectares(),
+                                r.getTotalAmount(),
+                                r.getState(),
+                                r.getParcel() != null ? r.getParcel().getLocationText() : "Sin ubicación",
+                                r.getOperator() != null ? r.getOperator().getId() : null,
+                                (r.getDrone() != null && r.getDrone().getDroneModel() != null) ? r.getDrone().getDroneModel().getModelName() : "Sin asignar",
+                                r.getPayment() != null ? r.getPayment().getId() : null,
+                                r.getReview() != null ? r.getReview().getRating() : null
+                        )).toList();
+        return customerReservationsToShow;
     }
 
 }

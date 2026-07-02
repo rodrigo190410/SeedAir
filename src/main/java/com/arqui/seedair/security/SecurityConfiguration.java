@@ -88,15 +88,19 @@ public class SecurityConfiguration {
 
                         //permisos reservations
                         .requestMatchers(HttpMethod.GET,"/seedair/reservations/active/**").hasAnyAuthority("CUSTOMER")
+                        //
+                        .requestMatchers(HttpMethod.GET,"/seedair/reservations/list/**").hasAnyAuthority("CUSTOMER")
                         .requestMatchers(HttpMethod.GET,"/seedair/reservations/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/seedair/reservations/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST,"/seedair/reservations/register**").hasAnyAuthority("CUSTOMER")
                         .requestMatchers(HttpMethod.DELETE,"/seedair/reservations/**").hasAnyAuthority("ADMIN")
+                        //
                         //permisos parcels
                         .requestMatchers(HttpMethod.POST,"/seedair/parcels/**").hasAnyAuthority("ADMIN","CUSTOMER")
                         //permisos reviews
                         .requestMatchers(HttpMethod.POST,"/seedair/reviews/**").hasAnyAuthority("ADMIN","CUSTOMER")
                         //permisos drones
+                        .requestMatchers(HttpMethod.GET,"/seedair/drones/available").hasAnyAuthority("ADMIN", "CUSTOMER")
                         .requestMatchers(HttpMethod.POST,"/seedair/drones/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/seedair/drones/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/seedair/drones/**").hasAnyAuthority("ADMIN")
@@ -104,6 +108,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"/seedair/maintenances/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/seedair/maintenances/**").hasAnyAuthority("ADMIN")
                         //permisos operators
+                        .requestMatchers(HttpMethod.GET,"/seedair/operators/available/**").hasAnyAuthority("ADMIN","CUSTOMER")
                         .requestMatchers(HttpMethod.POST,"/seedair/operators/**").hasAnyAuthority("ADMIN")
                         //permisos payments
                         .requestMatchers(HttpMethod.PUT,"/seedair/payments/**").hasAnyAuthority("ADMIN")

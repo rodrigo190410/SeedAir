@@ -1,5 +1,6 @@
 package com.arqui.seedair.serviceimpl;
 
+import com.arqui.seedair.dtos.OperatorAvailableDTO;
 import com.arqui.seedair.dtos.OperatorRegisterDTO;
 import com.arqui.seedair.entities.Operator;
 import com.arqui.seedair.exceptions.IncompleteDataException;
@@ -59,5 +60,10 @@ public class OperatorServiceImpl implements OperatorService {
     @Override
     public List<Operator> listAll() {
         return operatorRepository.findAll();
+    }
+
+    @Override
+    public List<OperatorAvailableDTO> getAvailableOperators() {
+        return operatorRepository.findAvailableDronesForClient();
     }
 }

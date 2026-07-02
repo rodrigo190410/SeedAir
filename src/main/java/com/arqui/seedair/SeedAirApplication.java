@@ -74,6 +74,10 @@ public class SeedAirApplication {
                     "SN-MANTO-01", LocalDate.of(2026, 03, 11), true, null,
                     null, droneModelService.findById(1L)
             ));
+            droneService.addDrone(new Drone(null, "DRN-002",
+                    "SN-MANTO-02", LocalDate.of(2026, 03, 11), true, null,
+                    null, droneModelService.findById(1L)
+            ));
 
 //            // Drone inactivo/fuera de servicio (Vínculado al T20P - ID 2)
 //            Drone droneInactivo = droneService.addDTO(new DroneDTO("SN-OFF-99", 2L));
@@ -101,6 +105,7 @@ public class SeedAirApplication {
                     -76.1325, LocalDate.of(2026, 04, 30),
                     null, customerService.findById(1L), true
             ));
+
 //            parcelService.add(new Parcel(null, "Changuillo - San Javier", 4.5, -28.4589,
 //                    -50.1325,LocalDate.of(2026,04,25),
 //                    null, customerService.findById(2L)
@@ -147,10 +152,16 @@ public class SeedAirApplication {
             reservationService.add(new Reservation(
                     null, LocalDate.of(2026, 05, 16),
                     LocalDate.of(2026, 05, 16),
-                    1.5, 75.0, 112.5, true, null, null, customerService.findById(1L),
+                    1.5, 75.0, 112.5, Reservation.ReservationState.FINALIZADO , true, null, null, customerService.findById(1L),
                     parcelService.findById(1L), operatorService.findById(1L), droneService.findById(1L)
             ));
 
+            reservationService.add(new Reservation(
+                    null, LocalDate.of(2026, 07, 16),
+                    LocalDate.of(2026, 05, 16),
+                    1.5, 75.0, 112.5, Reservation.ReservationState.PENDIENTE , true, null, null, customerService.findById(1L),
+                    parcelService.findById(1L), operatorService.findById(1L), droneService.findById(1L)
+            ));
 //            reservationService.add(new Reservation(
 //                    null, LocalDate.of(2026, 05,22),
 //                    LocalDate.of(2026, 05,24),

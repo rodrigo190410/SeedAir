@@ -21,8 +21,8 @@ public class Payment {
     private String paymentMethod;
     private Boolean isPending;
     private String operationCode;
-    //<-reservation
-    @ManyToOne
+
+    @OneToOne
     @JoinColumn(name = "reservation_id", unique = true, nullable = false)
     private Reservation reservation;
 }

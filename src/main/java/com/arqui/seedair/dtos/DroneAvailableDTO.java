@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DroneAvailableDTO {
+    private Long id;
     private String modelName;
     private Long droneBrandId;
     private Double seedCapacityKg; // Capacidad de semillas
