@@ -24,7 +24,8 @@ public interface ReservationService {
     void delete(Long id);
 
 
-    List<ReservationDTOByCustomerId> listReservationByCustomerId(Long customerId);
+    List<ReservationDTOByCustomerId> listReservationsByCustomerId(Long customerId);
+    List<ReservationDTOByCustomerId> listReservationsByCustomer();
 
 
 

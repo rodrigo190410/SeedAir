@@ -25,12 +25,19 @@ public class ParcelController {
         return new ResponseEntity<>(newParcel, HttpStatus.CREATED);
     }
 
-    //obtener lisstado de parcelas
+    //obtener lisstado de parcelas para admin
     @GetMapping("/parcels/list/{customerId}")
     public ResponseEntity<List<ParcelDTOByCustomerId>> listParcelsByCustomerId(@PathVariable Long customerId){
         List<ParcelDTOByCustomerId> customerParcelsList = parcelService.listParcelDTOById(customerId);
         return new ResponseEntity<>(customerParcelsList, HttpStatus.OK);
     }
+    //obtener lisstado de parcelas para el customer
+    @GetMapping("/parcels/list/customerParcels")
+    public ResponseEntity<List<ParcelDTOByCustomerId>> listParcelsByCustomer(){
+        List<ParcelDTOByCustomerId> customerParcelsList = parcelService.listParcelDTOByCustomer();
+        return new ResponseEntity<>(customerParcelsList, HttpStatus.OK);
+    }
+
 
     //Actualizar parcela
     @PutMapping("/parcels/update")

@@ -42,6 +42,7 @@ public class ParcelServiceImpl implements ParcelService{
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Customer customer = customerRepository.findByUser_username(username);
+
         if (parcelDTO.getLocationText().isBlank()){
             throw new IncompleteDataException("El nombre de la ubicación es obligatoria");
         }
@@ -117,8 +118,39 @@ public class ParcelServiceImpl implements ParcelService{
     /////////////////
     @Override
     public List<ParcelDTOByCustomerId> listParcelDTOById(Long customerId) {
+
+
         //Para mostrar solo las que se encuentran activas (que no fueron eliminadas logicamente hablando)
-        List<Parcel> customerParcelsList = parcelRepository.findByCustomerId((customerId));
+        List<Parcel> customerParcelsList = parcelRepository.findByCustomerId(customerId);
+
+        List<ParcelDTOByCustomerId> parcelDTOList = customerParcelsList.stream()
+                .filter(p -> p.getIsActive() && p.getIsActive() != null)//pra que jale solo a los activos
+                .map(
+                        p->new ParcelDTOByCustomerId(
+                                p.getId(),
+                                p.getLocationText(),
+                                p.getTotalHectares(),
+                                p.getLatitude(),
+                                p.getLongitude(),
+                                p.getCreatedAt(),
+                                p.getIsActive()
+
+
+                        )).toList();
+        return parcelDTOList;
+
+    }
+    @Override
+    public List<ParcelDTOByCustomerId> listParcelDTOByCustomer() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Customer customer = customerRepository.findByUser_username(username);
+
+
+
+        //Para mostrar solo las que se encuentran activas (que no fueron eliminadas logicamente hablando)
+        List<Parcel> customerParcelsList = parcelRepository.findByCustomerId(customer.getId());
 
         List<ParcelDTOByCustomerId> parcelDTOList = customerParcelsList.stream()
                 .filter(p -> p.getIsActive() && p.getIsActive() != null)//pra que jale solo a los activos

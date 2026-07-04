@@ -257,12 +257,39 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationDTOByCustomerId> listReservationByCustomerId(Long customerId) {
+    public List<ReservationDTOByCustomerId> listReservationsByCustomerId(Long customerId) {
         List<Reservation> customerReservationsActive = reservationRepository.findByIsActive(true);
 
 
         List<ReservationDTOByCustomerId> customerReservationsToShow = customerReservationsActive.stream()
                 .filter(r -> r.getIsActive() != null && r.getCustomer().getId().equals(customerId))//pra que jale solo a los activos y del customer
+                .map(
+                        r->new ReservationDTOByCustomerId(
+                                r.getId(),
+                                r.getScheduledStartDate(),
+                                r.getScheduledEndDate(),
+                                r.getHectares(),
+                                r.getTotalAmount(),
+                                r.getState(),
+                                r.getParcel() != null ? r.getParcel().getLocationText() : "Sin ubicación",
+                                r.getOperator() != null ? r.getOperator().getId() : null,
+                                (r.getDrone() != null && r.getDrone().getDroneModel() != null) ? r.getDrone().getDroneModel().getModelName() : "Sin asignar",
+                                r.getPayment() != null ? r.getPayment().getId() : null,
+                                r.getReview() != null ? r.getReview().getRating() : null
+                        )).toList();
+        return customerReservationsToShow;
+    }
+    @Override
+    public List<ReservationDTOByCustomerId> listReservationsByCustomer() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Customer currentCustomer = customerRepository.findByUser_username(username);
+
+        List<Reservation> reservationsActive = reservationRepository.findByIsActive(true);
+
+
+        List<ReservationDTOByCustomerId> customerReservationsToShow = reservationsActive.stream()
+                .filter(r -> r.getIsActive() != null && r.getCustomer().getId().equals(currentCustomer.getId()))//pra que jale solo a los activos y del customer
                 .map(
                         r->new ReservationDTOByCustomerId(
                                 r.getId(),

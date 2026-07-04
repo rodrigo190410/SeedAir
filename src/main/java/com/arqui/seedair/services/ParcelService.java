@@ -16,6 +16,7 @@ public interface ParcelService {
     void logicDelete(Long id);
 
     public ParcelDTOByCustomerId findParcelById(Long id);
+    public List<ParcelDTOByCustomerId> listParcelDTOByCustomer();
 
     public ParcelDTOByCustomerId update(ParcelDTOByCustomerId parcelDTO);
 }
