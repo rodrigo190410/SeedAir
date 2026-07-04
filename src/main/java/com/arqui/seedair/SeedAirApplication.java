@@ -45,9 +45,10 @@ public class SeedAirApplication {
             Authority authority2 = authorityService.add(new Authority(null, "CUSTOMER", null));
 
             //Data de prueba
-            userService.addDTO(new UserDTO(null, "brunocustomer", "pass", "CUSTOMER"));
-            userService.addDTO(new UserDTO(null, "luismanager", "pass", "ADMIN"));
-            userService.addDTO(new UserDTO(null, "adrianacustomer", "pass", "CUSTOMER"));
+            userService.addDTO(new UserDTO(null, "customer", "pass", "CUSTOMER"));
+            userService.addDTO(new UserDTO(null, "admin", "pass", "ADMIN"));
+            //usuario en mantenimiento -> no usar
+            userService.addDTO(new UserDTO(null, "universal", "pass", "ADMIN;CUSTOMER"));
             //Brands
             droneBrandService.add(new DroneBrand(null, "DJI", null));
             droneBrandService.add(new DroneBrand(null, "Parrot", null));
