@@ -43,6 +43,9 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("El customer con ID " + id + " no existe."));
     }
+    public Customer getByUserId(Long id){
+        return customerRepository.findByUser_id(id);
+    };
 
     private List<Authority> authoritiesFromString(String authorities) {
 

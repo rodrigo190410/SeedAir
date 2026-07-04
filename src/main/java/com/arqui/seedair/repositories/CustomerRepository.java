@@ -12,6 +12,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     //QUERY METHOD
     public Customer findByUser_username(String username);
+    public Customer findByUser_id(Long id);
 
     //SQL NATIVE
     @Query(value = "SELECT DISTINCT c.first_name as firstName, c.last_name as lastName, c.phone as phone " +

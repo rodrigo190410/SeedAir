@@ -10,6 +10,7 @@ public interface CustomerService {
     public Customer add(Customer customer);
     public List<Customer> listAll();
     public Customer findById(Long id);
+    public Customer getByUserId(Long id);
     public CustomerDTO addDTO(CustomerDTO customerDTO);
 
     List<CustomerSummaryDTO> getCustomersNoReservation();

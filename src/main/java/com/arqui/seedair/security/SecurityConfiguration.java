@@ -86,6 +86,9 @@ public class SecurityConfiguration {
 
                         .requestMatchers(AUTH_WHITELIST).permitAll()
 
+                        //permisos customers
+                        .requestMatchers(HttpMethod.GET,"/seedair/customers/getByUserId/**").hasAnyAuthority("CUSTOMER","ADMIN")
+
                         //permisos reservations
                         .requestMatchers(HttpMethod.GET,"/seedair/reservations/active/**").hasAnyAuthority("CUSTOMER")
                         //

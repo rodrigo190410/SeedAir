@@ -2,6 +2,7 @@ package com.arqui.seedair.controllers;
 
 import com.arqui.seedair.dtos.CustomerDTO;
 import com.arqui.seedair.dtos.CustomerSummaryDTO;
+import com.arqui.seedair.entities.Customer;
 import com.arqui.seedair.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,11 @@ public class CustomerController {
     @GetMapping("/customers/atleastoneparcelandnoreservations")//http://localhost:8080/seedair/customers/query1
     public List<CustomerSummaryDTO> getCustomersNoReservation() {
         return customerService.getCustomersNoReservation();
+    }
+    @GetMapping("/customers/getByUserId/{userId}")//http://localhost:8080/seedair/customers/getByUserId
+    public Long getCustomerIdByUserId(@PathVariable Long userId) {
+        Customer cus = customerService.getByUserId(userId);
+        return cus.getId();
     }
 
     //Seleccionar los clientes que tienen más de una cantidad específica de parcelas
