@@ -149,7 +149,22 @@ public class ReservationServiceImpl implements ReservationService {
             if (cantDays == 0){
                 throw new InvalidDataRangeException("Mínimo debe realizar una reserva por un día");
             }
-            Double totalAmount= hectares*ratePerHectare*cantDays;
+            Double totalAmount = hectares * ratePerHectare * cantDays;
+            
+            if (drone.getDroneModel() != null && drone.getDroneModel().getSeedCapacityKg() != null && drone.getDroneModel().getSeedCapacityKg() > 20) {
+                totalAmount += 50.0;
+            }
+
+            if (drone.getReservations() != null) {
+                for (Reservation r : drone.getReservations()) {
+                    if (r.getIsActive()) {
+                        if (!startDate.isAfter(r.getScheduledEndDate()) && !endDate.isBefore(r.getScheduledStartDate())) {
+                            throw new InvalidDataRangeException("El dron seleccionado ya se encuentra reservado en las fechas indicadas.");
+                        }
+                    }
+                }
+            }
+
             List<Customer> customerList = customerService.listAll();
             for (Customer c: customerList){
                 for (Reservation r: c.getReservations()){

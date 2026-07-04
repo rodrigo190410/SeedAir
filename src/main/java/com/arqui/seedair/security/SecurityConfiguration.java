@@ -110,6 +110,7 @@ public class SecurityConfiguration {
                         //permisos operators
                         .requestMatchers(HttpMethod.GET,"/seedair/operators/available/**").hasAnyAuthority("ADMIN","CUSTOMER")
                         .requestMatchers(HttpMethod.POST,"/seedair/operators/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/seedair/operators/update/**").hasAnyAuthority("ADMIN")
                         //permisos payments
                         .requestMatchers(HttpMethod.PUT,"/seedair/payments/**").hasAnyAuthority("ADMIN")
                         //permisos droneModels

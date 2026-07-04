@@ -1,5 +1,6 @@
 package com.arqui.seedair.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Operator {
     private Integer experienceYears;
     private Boolean availabilityStatus;
     //->reservation
+    @JsonIgnore
     @OneToMany(mappedBy = "operator", fetch = FetchType.EAGER)
     private List<Reservation> reservations;
 

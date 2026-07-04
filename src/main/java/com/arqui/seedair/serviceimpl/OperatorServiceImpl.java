@@ -2,6 +2,7 @@ package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.OperatorAvailableDTO;
 import com.arqui.seedair.dtos.OperatorRegisterDTO;
+import com.arqui.seedair.dtos.OperatorResponseDTO;
 import com.arqui.seedair.entities.Operator;
 import com.arqui.seedair.exceptions.IncompleteDataException;
 import com.arqui.seedair.exceptions.InvalidDataRangeException;
@@ -12,6 +13,7 @@ import com.arqui.seedair.services.OperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -63,7 +65,36 @@ public class OperatorServiceImpl implements OperatorService {
     }
 
     @Override
+    public List<OperatorResponseDTO> listOperators() {
+        List<Operator> operators = listAll();
+        List<OperatorResponseDTO> newList = new ArrayList<>();
+
+        for (Operator o : operators){
+            OperatorResponseDTO dto = new OperatorResponseDTO(
+                    o.getId(),o.getLicenseCode(),o.getCertificationLevel(),
+                    o.getExperienceYears(),o.getAvailabilityStatus()
+            );
+            newList.add(dto);
+        }
+
+        return newList;
+    }
+
+
+    @Override
     public List<OperatorAvailableDTO> getAvailableOperators() {
         return operatorRepository.findAvailableDronesForClient();
+    }
+
+    @Override
+    public Operator update(Operator operator) {
+        if (operator.getId() == null){
+            throw new ResourceNotFoundException("El id es obligatorio");
+        }
+        Operator foundOperator = findById(operator.getId());
+        foundOperator.setAvailabilityStatus(operator.getAvailabilityStatus());
+
+        operatorRepository.save(foundOperator);
+        return foundOperator;
     }
 }
