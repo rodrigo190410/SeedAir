@@ -44,7 +44,7 @@ public class UserController {
 
 
     @PostMapping("/users/login") // http://localhost:8080/seedair/users/login
-    public ResponseEntity<TokenDTO> login(@RequestBody User user){
+    public ResponseEntity<TokenDTO> login(@RequestBody UserDTO user){
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword())
