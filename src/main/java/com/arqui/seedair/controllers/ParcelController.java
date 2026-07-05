@@ -54,7 +54,7 @@ public class ParcelController {
     }
 
     //Eliminación logica
-    @DeleteMapping("/parcels/logical_delete/{parcelId}")
+    @DeleteMapping("/parcels/logicalDelete/{parcelId}")
     public ResponseEntity<Void> updateStatus (@PathVariable Long parcelId){
         parcelService.logicDelete(parcelId);
         return new ResponseEntity<>( HttpStatus.OK);

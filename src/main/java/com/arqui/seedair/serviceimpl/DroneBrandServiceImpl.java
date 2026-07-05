@@ -7,6 +7,7 @@ import com.arqui.seedair.exceptions.IncompleteDataException;
 import com.arqui.seedair.exceptions.KeyRepeatedDataExeception;
 import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.DroneBrandRepository;
+import com.arqui.seedair.repositories.DroneModelRepository;
 import com.arqui.seedair.services.DroneBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,26 +19,30 @@ import java.util.List;
 public class DroneBrandServiceImpl implements DroneBrandService {
     @Autowired
     DroneBrandRepository droneBrandRepository;
+    @Autowired
+    DroneModelRepository droneModelRepository;
+
     @Override
     public DroneBrand add(DroneBrand droneBrand) {
         return droneBrandRepository.save(droneBrand);
     }
 
+
     @Override
     public DroneBrandRegisterDTO register(DroneBrandRegisterDTO droneBrandDTO) {
         List<DroneBrand> droneBrandList = listAll();
-        if (droneBrandDTO.getBrandName()==null || droneBrandDTO.getBrandName().isBlank()){
+        if (droneBrandDTO.getName()==null || droneBrandDTO.getName().isBlank()){
             throw new IncompleteDataException("Debe ingresar el nombre de alguna marca");
         }
         for (DroneBrand d: droneBrandList){
-            if (droneBrandDTO.getBrandName().equals(d.getName())){
-                throw new KeyRepeatedDataExeception("La marca: "+ droneBrandDTO.getBrandName() + " ya está registrada");
+            if (droneBrandDTO.getName().equals(d.getName())){
+                throw new KeyRepeatedDataExeception("La marca: "+ droneBrandDTO.getName() + " ya está registrada");
             }
         }
 
         DroneBrand newBrand = new DroneBrand(
                 null,
-                droneBrandDTO.getBrandName(),
+                droneBrandDTO.getName(),
                 null
         );
         droneBrandRepository.save(newBrand);
@@ -77,6 +82,14 @@ public class DroneBrandServiceImpl implements DroneBrandService {
 
     @Override
     public void delete(Long id) {
+
+        DroneBrand brand = droneBrandRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("La marca no existe."));
+
+        if (droneModelRepository.existsByDroneBrandId(id)) {
+            throw new IllegalStateException("No es posible eliminar esta marca porque ya tiene drones registrados con su Id.");
+        }
+
         droneBrandRepository.deleteById(id);
     }
 }

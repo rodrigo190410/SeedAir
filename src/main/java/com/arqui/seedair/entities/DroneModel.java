@@ -22,6 +22,7 @@ public class DroneModel {
     private Double coverageHectaresPerDay;
     private Integer autonomyMinutes;
     private Double maxSpeedKmh;
+
     //->Drone
     @JsonIgnore
     @OneToMany(mappedBy = "droneModel", fetch = FetchType.EAGER)
@@ -30,4 +31,6 @@ public class DroneModel {
     @ManyToOne
     @JoinColumn(name = "droneBrand_id")
     private DroneBrand droneBrand;
+
+    private Boolean isActive = true;
 }

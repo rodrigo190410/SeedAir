@@ -12,6 +12,7 @@ public interface DroneRepository extends JpaRepository<Drone, Long> {
 
     boolean existsByCode(String code);
     boolean existsBySerialNumber(String serialNumber);
+    List<Drone> findByIsActive(Boolean isActive);
 
     @Query("SELECT new com.arqui.seedair.dtos.DroneAvailableDTO(d.id, m.modelName, m.droneBrand.id, m.seedCapacityKg, m.autonomyMinutes) " +
             "FROM Drone d JOIN d.droneModel m " +

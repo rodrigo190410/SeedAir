@@ -2,6 +2,8 @@ package com.arqui.seedair.controllers;
 
 import com.arqui.seedair.dtos.DroneAvailableDTO;
 import com.arqui.seedair.dtos.DroneDTO;
+import com.arqui.seedair.dtos.DroneDTOUpdate;
+import com.arqui.seedair.dtos.DroneListDTO;
 import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.services.DroneService;
 import org.modelmapper.ModelMapper;
@@ -27,15 +29,15 @@ public class DroneController {
         return new ResponseEntity<>(drones, HttpStatus.OK);
     }
 
-    @GetMapping("/drones/status/{isActive}") // http://localhost:8080/seedair/drones/status/true
-    public ResponseEntity<List<Drone>> listDronesByStatus(@PathVariable Boolean isActive) {
-        List<Drone> drones = droneService.getDronesByStatus(isActive);
+    @GetMapping("/drones/isActive/{isActive}") // http://localhost:8080/seedair/drones/status/true
+    public ResponseEntity<List<DroneListDTO>> listDronesByIsActive(@PathVariable Boolean isActive) {
+        List<DroneListDTO> drones = droneService.getDronesByIsActive(isActive);
         return new ResponseEntity<>(drones, HttpStatus.OK);
     }
 
     @PutMapping("/drones/update")
-    public ResponseEntity<Drone>update(@RequestBody Drone drone){
-        Drone updatedDrone = droneService.update(drone);
+    public ResponseEntity<DroneDTOUpdate>update(@RequestBody DroneDTOUpdate drone){
+        DroneDTOUpdate updatedDrone = droneService.update(drone);
         return new ResponseEntity<>(updatedDrone, HttpStatus.OK);
     }
     @GetMapping("/drones/{id}") // http://localhost:8080/seedair/drones/{id}
@@ -52,10 +54,18 @@ public class DroneController {
         return new ResponseEntity<>(droneService.addDTO(drone), HttpStatus.CREATED);
     }
 
+
     @DeleteMapping("/drones/delete/{id}") //http://localhost:8080/seedair/drones/delete/6
     public ResponseEntity<Void> deleteDrone(@PathVariable Long id) {
         droneService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // Eliminación lógica
+    @DeleteMapping("/drones/logicalDelete/{droneId}")
+    public ResponseEntity<Void> updateStatus(@PathVariable Long droneId) {
+        droneService.logicDelete(droneId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

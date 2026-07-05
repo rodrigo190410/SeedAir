@@ -2,8 +2,11 @@ package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.DroneAvailableDTO;
 import com.arqui.seedair.dtos.DroneDTO;
+import com.arqui.seedair.dtos.DroneDTOUpdate;
+import com.arqui.seedair.dtos.DroneListDTO;
 import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.entities.DroneModel;
+import com.arqui.seedair.exceptions.IncompleteDataException;
 import com.arqui.seedair.exceptions.KeyRepeatedDataExeception;
 import com.arqui.seedair.exceptions.ResourceNotFoundException;
 import com.arqui.seedair.repositories.DroneModelRepository;
@@ -66,19 +69,59 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public List<Drone> getDronesByStatus(Boolean isActive) {
-        return droneRepository.findDronesByStatus(isActive);
+    public List<DroneListDTO> getDronesByIsActive(Boolean isActive) {
+        List<Drone> dronesList = droneRepository.findByIsActive(isActive);
+
+        return dronesList.stream().map(drone -> new DroneListDTO(
+                drone.getId(),
+                drone.getCode(),
+                drone.getSerialNumber(),
+                drone.getAcquisitionDate(),
+                drone.getDroneModel().getModelName(),
+                drone.getDroneModel().getDroneBrand().getName()
+        )).toList();
+
     }
 
     @Override
-    public Drone update(Drone drone) {
-        Drone foundDrone = findById(drone.getId());
-        foundDrone.setCode(drone.getCode());
-        foundDrone.setSerialNumber(drone.getSerialNumber());
-        foundDrone.setIsActive(drone.getIsActive());
+    public DroneDTOUpdate update(DroneDTOUpdate droneDTO) {
 
-        droneRepository.save(foundDrone);
-        return drone;
+
+        Drone drone = droneRepository.findById(droneDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("El dron con ID " + droneDTO.getId() + " no existe."));
+
+        if (droneDTO.getCode() == null || droneDTO.getCode().isBlank()){
+            throw new IncompleteDataException("El código es obligatorio");
+        }
+
+        if (!drone.getCode().equals(droneDTO.getCode()) && droneRepository.existsByCode(droneDTO.getCode())) {
+            throw new KeyRepeatedDataExeception("Ya existe otro dron con el código ingresado: " + droneDTO.getCode());
+        }
+
+        if (droneDTO.getSerialNumber() == null || droneDTO.getSerialNumber().isBlank()){
+            throw new IncompleteDataException("El número de serie es obligatorio");
+        }
+
+        if (!drone.getSerialNumber().equals(droneDTO.getSerialNumber()) &&
+                droneRepository.existsBySerialNumber(droneDTO.getSerialNumber())) {
+            throw new KeyRepeatedDataExeception("Ya existe otro dron con el número de serie: " + droneDTO.getSerialNumber());
+        }
+
+        drone.setCode(droneDTO.getCode());
+        drone.setSerialNumber(droneDTO.getSerialNumber());
+
+        // Validamos y corregimos el modelo solo si enviaron uno distinto
+        if (droneDTO.getDroneModelId() != null && !drone.getDroneModel().getId().equals(droneDTO.getDroneModelId())) {
+
+            DroneModel model = droneModelRepository.findById(droneDTO.getDroneModelId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Modelo no encontrado"));
+            drone.setDroneModel(model);
+        }
+
+
+        droneRepository.save(drone);
+
+        return droneDTO;
     }
 
     @Override
@@ -95,5 +138,14 @@ public class DroneServiceImpl implements DroneService {
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el Drone con el ID:" +id));
     }
 
+    @Override
+    public void logicDelete(Long id) {
+        Drone drone = droneRepository.findById(id).
+                orElseThrow(() ->
+                        new ResourceNotFoundException("El dron con ID " + id + " no existe."));
+
+        drone.setIsActive(false);
+        droneRepository.save(drone);
+    }
 
 }
