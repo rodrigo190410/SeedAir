@@ -119,9 +119,15 @@ public class SeedAirApplication {
 
 
             operatorService.add(new Operator(
-                    null, "DRN-AGRO-1024",
-                    "AVANZADO",
-                    5, true,
+                    null, "DRN-AGRO-1024", 
+                    "SENIOR","Juan","Pérez",
+                    5, true,true,
+                    null
+            ));
+            operatorService.add(new Operator(
+                    null, "DRN-AGRO-1000",
+                    "SENIOR","Santiago","Arriola",
+                    5, true,true,
                     null
             ));
 //            operatorService.add(new Operator(

@@ -15,5 +15,6 @@ public interface OperatorService {
     public List<Operator> listAll();
     public List<OperatorResponseDTO> listOperators();
     public List<OperatorAvailableDTO> getAvailableOperators();
-    public Operator update(Operator operator);
+    public OperatorResponseDTO update(OperatorResponseDTO operator);
+    public void delete(Long id);
 }

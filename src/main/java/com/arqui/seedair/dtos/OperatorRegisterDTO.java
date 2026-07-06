@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 public class OperatorRegisterDTO {
     private String licenseCode;
     private String certificationLevel;
+    private String name;
+    private String lastname;
     private Integer experienceYears;
 }
