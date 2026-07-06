@@ -1,14 +1,14 @@
 package com.arqui.seedair.serviceimpl;
 
-import com.arqui.seedair.dtos.DroneDTO;
+import com.arqui.seedair.dtos.DroneModelListDTO;
 import com.arqui.seedair.dtos.DroneModelDTO;
-import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.entities.DroneBrand;
 import com.arqui.seedair.entities.DroneModel;
 import com.arqui.seedair.exceptions.IncompleteDataException;
 import com.arqui.seedair.exceptions.InvalidDataRangeException;
 import com.arqui.seedair.exceptions.KeyRepeatedDataExeception;
 import com.arqui.seedair.exceptions.ResourceNotFoundException;
+import com.arqui.seedair.repositories.DroneBrandRepository;
 import com.arqui.seedair.repositories.DroneModelRepository;
 import com.arqui.seedair.services.DroneBrandService;
 import com.arqui.seedair.services.DroneModelService;
@@ -25,6 +25,8 @@ public class DroneModelServiceImpl implements DroneModelService {
     DroneModelRepository droneModelRepository;
     @Autowired
     DroneBrandService droneBrandService;
+    @Autowired
+    DroneBrandRepository droneBrandRepository;
     @Override
     public DroneModel addDroneModel(DroneModel droneModel) {
         return droneModelRepository.save(droneModel);
@@ -61,7 +63,8 @@ public class DroneModelServiceImpl implements DroneModelService {
                 dto.getAutonomyMinutes(),
                 dto.getMaxSpeedKmh(),
                 null,
-                droneBrandId
+                droneBrandId,
+                true
                 );
         droneModelRepository.save(droneModel);
         return dto;
@@ -87,12 +90,12 @@ public class DroneModelServiceImpl implements DroneModelService {
     }
 
     @Override
-    public List<DroneModelDTO> listDroneModels() {
+    public List<DroneModelListDTO> listDroneModels() {
         List<DroneModel> drones = listAll();
-        List<DroneModelDTO> newList = new ArrayList<>();
+        List<DroneModelListDTO> newList = new ArrayList<>();
 
         for (DroneModel d:drones){
-            DroneModelDTO dto = new DroneModelDTO(d.getDroneBrand().getId(),d.getModelName(),
+            DroneModelListDTO dto = new DroneModelListDTO(d.getId(),d.getDroneBrand().getName(),d.getModelName(),
                     d.getSeedCapacityKg(),d.getCoverageHectaresPerDay(),d.getAutonomyMinutes(),
                     d.getMaxSpeedKmh());
 
@@ -103,15 +106,79 @@ public class DroneModelServiceImpl implements DroneModelService {
     }
 
     @Override
-    public DroneModel update(DroneModel droneModel) {
-        DroneModel foundModel = findById(droneModel.getId());
-        foundModel.setModelName(droneModel.getModelName());
-        foundModel.setSeedCapacityKg(droneModel.getSeedCapacityKg());
-        foundModel.setCoverageHectaresPerDay(droneModel.getCoverageHectaresPerDay());
-        foundModel.setAutonomyMinutes(droneModel.getAutonomyMinutes());
-        foundModel.setMaxSpeedKmh(droneModel.getMaxSpeedKmh());
+    public DroneModelDTO update(DroneModelDTO droneModelDTO) {
 
-        droneModelRepository.save(foundModel);
-        return droneModel;
+        DroneModel droneModel = droneModelRepository.findById(droneModelDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("El modelo de ID " + droneModelDTO.getId() + " no existe."));
+
+        if (droneModelDTO.getModelName() == null || droneModelDTO.getModelName().isBlank()) {
+            throw new IncompleteDataException("El nombre del modelo es obligatorio.");
+        }
+
+        if (droneModelDTO.getSeedCapacityKg() == null || droneModelDTO.getSeedCapacityKg() < 0) {
+            throw new InvalidDataRangeException("La capacidad de semillas debe tener un valor positivo.");
+        }
+
+        if (droneModelDTO.getCoverageHectaresPerDay() == null || droneModelDTO.getCoverageHectaresPerDay() < 0) {
+            throw new InvalidDataRangeException("La cobertura de hectáreas por día debe tener un valor positivo.");
+        }
+
+        droneModel.setModelName(droneModelDTO.getModelName());
+        droneModel.setSeedCapacityKg(droneModelDTO.getSeedCapacityKg());
+        droneModel.setCoverageHectaresPerDay(droneModelDTO.getCoverageHectaresPerDay());
+        droneModel.setAutonomyMinutes(droneModelDTO.getAutonomyMinutes());
+        droneModel.setMaxSpeedKmh(droneModelDTO.getMaxSpeedKmh());
+
+        if (droneModelDTO.getDroneBrandId() != null &&
+                !droneModel.getDroneBrand().getId().equals(droneModelDTO.getDroneBrandId())) {
+
+            DroneBrand brand = droneBrandRepository.findById(droneModelDTO.getDroneBrandId())
+                    .orElseThrow(() -> new ResourceNotFoundException("La marca especificada no existe."));
+            droneModel.setDroneBrand(brand);
+        }
+
+        droneModelRepository.save(droneModel);
+
+        return droneModelDTO;
+    }
+    @Override
+    public void logicDelete(Long id) {
+        DroneModel droneModel = droneModelRepository.findById(id).
+                orElseThrow(() ->
+                        new ResourceNotFoundException("El modelo de dron con ID " + id + " no existe."));
+
+        droneModel.setIsActive(false);
+        droneModelRepository.save(droneModel);
+    }
+    public DroneModelDTO getDroneModelById(Long droneModelId){
+        DroneModel droneModel = findById(droneModelId);
+        DroneModelDTO droneModelDTO = new DroneModelDTO(
+                droneModel.getId(),
+                droneModel.getDroneBrand().getId(),
+                droneModel.getModelName(),
+                droneModel.getSeedCapacityKg(),
+                droneModel.getCoverageHectaresPerDay(),
+                droneModel.getAutonomyMinutes(),
+                droneModel.getMaxSpeedKmh()
+        );
+
+        return droneModelDTO;
+
+    }
+    @Override
+    public List<DroneModelListDTO> getDroneModelsByIsActive(Boolean isActive) {
+
+        List<DroneModel> models = droneModelRepository.findByIsActive(isActive);
+
+
+        return models.stream().map(model -> new DroneModelListDTO(
+                model.getId(),
+                model.getDroneBrand().getName(),
+                model.getModelName(),
+                model.getSeedCapacityKg(),
+                model.getCoverageHectaresPerDay(),
+                model.getAutonomyMinutes(),
+                model.getMaxSpeedKmh()
+        )).toList();
     }
 }

@@ -123,6 +123,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE,"/seedair/droneModel/**").hasAnyAuthority("ADMIN")
                         //permisos customer
                         .requestMatchers(HttpMethod.GET,"/seedair/customers/**").hasAnyAuthority("ADMIN")
+                        //permisos droneBrands
+                        .requestMatchers(HttpMethod.GET,"/seedair/brands/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/seedair/brands/**").hasAnyAuthority("ADMIN")
+
                         .anyRequest().authenticated()
 
         );

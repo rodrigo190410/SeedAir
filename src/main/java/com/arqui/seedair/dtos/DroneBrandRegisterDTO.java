@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DroneBrandRegisterDTO {
-    private String brandName;
+    private String name;
 }
