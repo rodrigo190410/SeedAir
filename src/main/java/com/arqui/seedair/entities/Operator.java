@@ -19,8 +19,12 @@ public class Operator {
     private Long id;
     private String licenseCode;
     private String certificationLevel;
+    private String name;
+    private String lastname;
     private Integer experienceYears;
     private Boolean availabilityStatus;
+    private Boolean isActive;
+
     //->reservation
     @JsonIgnore
     @OneToMany(mappedBy = "operator", fetch = FetchType.EAGER)

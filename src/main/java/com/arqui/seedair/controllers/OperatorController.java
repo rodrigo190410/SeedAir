@@ -30,6 +30,11 @@ public class OperatorController {
         List<OperatorAvailableDTO> operators = operatorService.getAvailableOperators();
         return new ResponseEntity<>(operators, HttpStatus.OK);
     }
+    @GetMapping("/operators/{operatorId}")
+    public ResponseEntity<Operator> getById(@PathVariable Long operatorId){
+        Operator foundOperator = operatorService.findById(operatorId);
+        return  new ResponseEntity<>(foundOperator, HttpStatus.OK);
+    }
     @GetMapping("/operators") // http://localhost:8080/seedair/operators
     public ResponseEntity<List<OperatorResponseDTO>> getOperators() {
         List<OperatorResponseDTO> dtoList = operatorService.listOperators();
@@ -37,9 +42,15 @@ public class OperatorController {
     }
 
     @PutMapping("/operators/update") // http://localhost:8080/seedair/operators/update
-    public ResponseEntity<Operator> updateStatusOperator(@RequestBody Operator operator) {
-        Operator operatorUpdated = operatorService.update(operator);
+    public ResponseEntity<OperatorResponseDTO> updateStatusOperator(@RequestBody OperatorResponseDTO operator) {
+        OperatorResponseDTO operatorUpdated = operatorService.update(operator);
         return new ResponseEntity<>(operatorUpdated, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/operators/{operatorId}") // http://localhost:8080/seedair/operators/{operatorId}
+    public ResponseEntity<HttpStatus> delete(@PathVariable Long operatorId) {
+        operatorService.delete(operatorId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
