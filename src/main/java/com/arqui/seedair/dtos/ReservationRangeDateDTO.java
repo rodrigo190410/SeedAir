@@ -1,5 +1,6 @@
 package com.arqui.seedair.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +17,6 @@ public class ReservationRangeDateDTO {
     private Double hectares;
     private Double totalAmount;
     private Boolean isActive;
+    private LocalDate scheduledEndDate;
 
 }

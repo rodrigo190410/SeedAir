@@ -79,6 +79,16 @@ public class SeedAirApplication {
                     "SN-MANTO-02", LocalDate.of(2026, 03, 11), true, null,
                     null, droneModelService.findById(1L)
             ));
+            droneService.addDrone(new Drone(null, "DRN-002",
+                    "DJI Agras T40", LocalDate.of(2026, 07, 18), false, null,
+                    null, droneModelService.findById(1L)
+            ));
+            droneService.addDrone(new Drone(null, "DRN-002",
+                    "DJI Agras T20P", LocalDate.of(2026, 01, 20), true, null,
+                    null, droneModelService.findById(1L)
+            ));
+
+
 
 //            // Drone inactivo/fuera de servicio (Vínculado al T20P - ID 2)
 //            Drone droneInactivo = droneService.addDTO(new DroneDTO("SN-OFF-99", 2L));

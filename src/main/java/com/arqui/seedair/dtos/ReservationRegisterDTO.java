@@ -1,5 +1,6 @@
 package com.arqui.seedair.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,5 @@ public class ReservationRegisterDTO {
     private LocalDate scheduledEndDate;
     private Long parcelId;
     private Long droneId;
-    private Long operatorId;
 }
 
