@@ -6,6 +6,8 @@ import com.arqui.seedair.dtos.DroneDTOUpdate;
 import com.arqui.seedair.dtos.DroneListDTO;
 import com.arqui.seedair.entities.Drone;
 
+
+import java.time.LocalDate;
 import java.util.List;
 
 public interface DroneService {
@@ -20,4 +22,5 @@ public interface DroneService {
     void delete(Long id);
     void logicDelete(Long id);
     public Drone listId(Long id);
+    List<DroneDTO> getAvailableDronesByDates(LocalDate startDate, LocalDate endDate);
 }

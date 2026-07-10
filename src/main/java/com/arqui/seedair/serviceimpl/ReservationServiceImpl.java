@@ -76,7 +76,7 @@ public class ReservationServiceImpl implements ReservationService {
 
             reservationRangeDateDTOList.add(new ReservationRangeDateDTO(
                     r.getId(), r.getScheduledStartDate(), r.getHectares(),r.getTotalAmount(),
-                    r.getIsActive()
+                    r.getIsActive(), r.getScheduledEndDate()
             ));
         }
 
@@ -103,99 +103,123 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationDTOList;
     }
 
-        @Override
-        public ReservationRegisterDTO registerReservation(ReservationRegisterDTO reservationRegisterDTO) {
+    @Override
+    public ReservationRegisterDTO registerReservation(ReservationRegisterDTO reservationRegisterDTO) {
 
-            if (reservationRegisterDTO.getParcelId() == null ||
-                    reservationRegisterDTO.getOperatorId() == null ||
-                    reservationRegisterDTO.getDroneId() == null) {
-                throw new ResourceNotFoundException("No se puede registrar: La parcela, el operador y dron son obligatorios.");
-            }
-
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Customer customer = customerRepository.findByUser_username(username);
-            Parcel parcel = parcelService.findById(reservationRegisterDTO.getParcelId());
-            Double hectares= parcel.getTotalHectares();
-            Double ratePerHectare = 0.0;
-            if (hectares <= 6) {
-                ratePerHectare = 75.0;
-            } else {
-                ratePerHectare = 50.0;
-            }
-
-
-
-            Operator operator = operatorRepository.findById(reservationRegisterDTO.getOperatorId()).get();
-            Drone drone = droneRepository.findById(reservationRegisterDTO.getDroneId()).get();
-
-            if (operator.getAvailabilityStatus()==false){
-                throw new InvalidDataRangeException(
-                        "No se puede registrar la reserva: El operador seleccionado no se encuentra disponible."
-                );
-            }
-
-            if (!drone.getIsActive()){
-                throw new InvalidDataRangeException(
-                        "No se puede registrar la reserva: El dron seleccionado no se encuentra disponible."
-                );
-            }
-
-            LocalDate startDate = reservationRegisterDTO.getScheduledStartDate();
-            LocalDate endDate = reservationRegisterDTO.getScheduledEndDate();
-            long cantDays = ChronoUnit.DAYS.between(startDate, endDate);
-            if (cantDays<0){
-                throw new InvalidDataRangeException("La fecha de fin no puede ser anterior a la de inicio");
-            }
-            if (cantDays == 0){
-                throw new InvalidDataRangeException("Mínimo debe realizar una reserva por un día");
-            }
-            Double totalAmount = hectares * ratePerHectare * cantDays;
-            
-            if (drone.getDroneModel() != null && drone.getDroneModel().getSeedCapacityKg() != null && drone.getDroneModel().getSeedCapacityKg() > 20) {
-                totalAmount += 50.0;
-            }
-
-            if (drone.getReservations() != null) {
-                for (Reservation r : drone.getReservations()) {
-                    if (r.getIsActive()) {
-                        if (!startDate.isAfter(r.getScheduledEndDate()) && !endDate.isBefore(r.getScheduledStartDate())) {
-                            throw new InvalidDataRangeException("El dron seleccionado ya se encuentra reservado en las fechas indicadas.");
-                        }
-                    }
-                }
-            }
-
-            List<Customer> customerList = customerService.listAll();
-            for (Customer c: customerList){
-                for (Reservation r: c.getReservations()){
-                    if (r.getIsActive()){
-                        if(!startDate.isAfter(r.getScheduledStartDate()) && !endDate.isBefore(r.getScheduledEndDate())){
-                            throw new InvalidDataRangeException("Ya existe una reserva registrada dentro de estas fechas");
-                        }
-                    }
-                }
-            }
-
-            Reservation newReservation = new Reservation(
-                    null, reservationRegisterDTO.getScheduledStartDate(), reservationRegisterDTO.getScheduledEndDate(),
-                    hectares, ratePerHectare,totalAmount, Reservation.ReservationState.PENDIENTE , true, null,
-                    null, customer, parcel, operator, drone
-            );
-
-            reservationRepository.save(newReservation);
-
-            LocalDate paymentDate = newReservation.getScheduledEndDate();
-
-            Payment initialPayment = new Payment(
-                    null, paymentDate, totalAmount, "AL CONTADO", true,
-                    null, newReservation
-            );
-            Payment savedPayment = paymentRepository.save(initialPayment);
-            savedPayment.setOperationCode("OP-" + savedPayment.getId());
-            paymentRepository.save(savedPayment);
-
-            return reservationRegisterDTO;
+        if (reservationRegisterDTO.getParcelId() == null ||
+                reservationRegisterDTO.getDroneId() == null) {
+            throw new ResourceNotFoundException("No se puede registrar: La parcela y el dron son obligatorios.");
         }
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Customer customer = customerRepository.findByUser_username(username);
+        Parcel parcel = parcelService.findById(reservationRegisterDTO.getParcelId());
+        Double hectares = parcel.getTotalHectares();
+        Double ratePerHectare = 0.0;
+        if (hectares <= 6) {
+            ratePerHectare = 75.0;
+        } else {
+            ratePerHectare = 50.0;
+        }
+
+        Drone drone = droneRepository.findById(reservationRegisterDTO.getDroneId()).get();
+
+        if (!drone.getIsActive()) {
+            throw new InvalidDataRangeException(
+                    "No se puede registrar la reserva: El dron seleccionado no se encuentra disponible."
+            );
+        }
+
+        LocalDate startDate = reservationRegisterDTO.getScheduledStartDate();
+        LocalDate endDate = reservationRegisterDTO.getScheduledEndDate();
+        long cantDays = ChronoUnit.DAYS.between(startDate, endDate);
+        if (cantDays < 0) {
+            throw new InvalidDataRangeException("La fecha de fin no puede ser anterior a la de inicio");
+        }
+        if (cantDays == 0) {
+            throw new InvalidDataRangeException("Mínimo debe realizar una reserva por un día");
+        }
+
+        // Auto-asignación de operador disponible en ese rango de fechas
+        Operator operator = findAvailableOperatorForDates(startDate, endDate);
+
+        Double totalAmount = hectares * ratePerHectare * cantDays;
+
+        if (drone.getDroneModel() != null && drone.getDroneModel().getSeedCapacityKg() != null && drone.getDroneModel().getSeedCapacityKg() > 20) {
+            totalAmount += 50.0;
+        }
+
+        if (drone.getReservations() != null) {
+            for (Reservation r : drone.getReservations()) {
+                if (r.getIsActive()) {
+                    if (!startDate.isAfter(r.getScheduledEndDate()) && !endDate.isBefore(r.getScheduledStartDate())) {
+                        throw new InvalidDataRangeException("El dron seleccionado ya se encuentra reservado en las fechas indicadas.");
+                    }
+                }
+            }
+        }
+
+        List<Customer> customerList = customerService.listAll();
+        for (Customer c : customerList) {
+            for (Reservation r : c.getReservations()) {
+                if (r.getIsActive()) {
+                    if (!startDate.isAfter(r.getScheduledStartDate()) && !endDate.isBefore(r.getScheduledEndDate())) {
+                        throw new InvalidDataRangeException("Ya existe una reserva registrada dentro de estas fechas");
+                    }
+                }
+            }
+        }
+
+        Reservation newReservation = new Reservation(
+                null, reservationRegisterDTO.getScheduledStartDate(), reservationRegisterDTO.getScheduledEndDate(),
+                hectares, ratePerHectare, totalAmount, Reservation.ReservationState.PENDIENTE, true, null,
+                null, customer, parcel, operator, drone
+        );
+
+        reservationRepository.save(newReservation);
+
+        LocalDate paymentDate = newReservation.getScheduledEndDate();
+
+        Payment initialPayment = new Payment(
+                null, paymentDate, totalAmount, "AL CONTADO", true,
+                null, newReservation
+        );
+        Payment savedPayment = paymentRepository.save(initialPayment);
+        savedPayment.setOperationCode("OP-" + savedPayment.getId());
+        paymentRepository.save(savedPayment);
+
+        return reservationRegisterDTO;
+    }
+
+    private Operator findAvailableOperatorForDates(LocalDate startDate, LocalDate endDate) {
+        List<Operator> operators = operatorRepository.findAll();
+
+        for (Operator op : operators) {
+            if (op.getAvailabilityStatus() == null || !op.getAvailabilityStatus()) {
+                continue; // el operador está marcado como no disponible en general
+            }
+
+            boolean tieneConflicto = false;
+            if (op.getReservations() != null) {
+                for (Reservation r : op.getReservations()) {
+                    if (r.getIsActive() != null && r.getIsActive()) {
+                        if (!startDate.isAfter(r.getScheduledEndDate()) && !endDate.isBefore(r.getScheduledStartDate())) {
+                            tieneConflicto = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!tieneConflicto) {
+                return op; // primer operador libre en ese rango de fechas
+            }
+        }
+
+        throw new InvalidDataRangeException(
+                "No hay operadores disponibles para las fechas seleccionadas."
+        );
+    }
 
     @Override
     public Reservation findById(Long id) {
