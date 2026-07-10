@@ -14,6 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.List;
 
 @Configuration
 public class SecurityConfiguration {
@@ -71,19 +75,21 @@ public class SecurityConfiguration {
     @Autowired
     JwtRequestFilter jwtRequestFilter;
 
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.cors(Customizer.withDefaults());
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(
 
                 (auth) -> auth
                         //.anyRequest().permitAll()
-
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
 
                         //permisos customers
@@ -104,6 +110,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"/seedair/reviews/**").hasAnyAuthority("ADMIN","CUSTOMER")
                         //permisos drones
                         .requestMatchers(HttpMethod.GET,"/seedair/drones/available").hasAnyAuthority("ADMIN", "CUSTOMER")
+                        .requestMatchers(HttpMethod.POST,"/seedair/drones/available-by-dates").hasAnyAuthority("CUSTOMER", "ADMIN")
                         .requestMatchers(HttpMethod.POST,"/seedair/drones/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/seedair/drones/**").hasAnyAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/seedair/drones/**").hasAnyAuthority("ADMIN")
@@ -136,6 +143,19 @@ public class SecurityConfiguration {
         );
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 }

@@ -1,9 +1,6 @@
 package com.arqui.seedair.controllers;
 
-import com.arqui.seedair.dtos.DroneAvailableDTO;
-import com.arqui.seedair.dtos.DroneDTO;
-import com.arqui.seedair.dtos.DroneDTOUpdate;
-import com.arqui.seedair.dtos.DroneListDTO;
+import com.arqui.seedair.dtos.*;
 import com.arqui.seedair.entities.Drone;
 import com.arqui.seedair.services.DroneService;
 import org.modelmapper.ModelMapper;
@@ -15,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+
 @RestController
-@CrossOrigin("*")
+
 @RequestMapping("/seedair") // http://localhost:8080/seedair
 public class DroneController {
 
@@ -52,6 +50,17 @@ public class DroneController {
     @PostMapping("/drones/add")// http://localhost:8080/seedair/drones/add
     public ResponseEntity<DroneDTO> addDrone(@RequestBody DroneDTO drone) {
         return new ResponseEntity<>(droneService.addDTO(drone), HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/drones/available-by-dates") //http://localhost:8080/seedair/available-by-dates
+    public ResponseEntity<List<DroneDTO>> getAvailableDronesByDates(@RequestBody ReservationRangeDateDTO rangeDateDTO) {
+        // Usamos el Service que acabamos de actualizar
+        List<DroneDTO> availableDrones = droneService.getAvailableDronesByDates(
+                rangeDateDTO.getScheduledStartDate(),
+                rangeDateDTO.getScheduledEndDate()
+        );
+        return new ResponseEntity<>(availableDrones, HttpStatus.OK);
     }
 
 

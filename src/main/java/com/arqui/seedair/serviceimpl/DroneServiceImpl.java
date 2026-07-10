@@ -14,7 +14,10 @@ import com.arqui.seedair.repositories.DroneRepository;
 import com.arqui.seedair.services.DroneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DroneServiceImpl implements DroneService {
@@ -136,6 +139,19 @@ public class DroneServiceImpl implements DroneService {
     public Drone listId(Long id) {
         return  droneRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el Drone con el ID:" +id));
+    }
+
+    @Override
+    public List<DroneDTO> getAvailableDronesByDates(LocalDate startDate, LocalDate endDate) {
+        //llamado a la consulta personalizada del repo
+        List<Drone> drones = droneRepository.findAvailableDronesByDates(startDate, endDate);
+
+        return drones.stream().map(drone -> new DroneDTO(
+                String.valueOf(drone.getId()),
+                drone.getAcquisitionDate(),
+                drone.getSerialNumber(),
+                drone.getDroneModel() != null ? drone.getDroneModel().getId() : null // droneModelId
+        )).collect(Collectors.toList());
     }
 
     @Override
