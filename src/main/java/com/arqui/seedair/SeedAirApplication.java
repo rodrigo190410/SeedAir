@@ -57,18 +57,33 @@ public class SeedAirApplication {
             droneModelService.addDroneModel(new DroneModel(null, "DJI Agras T40",
                     40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
             ));
-//            droneModelService.addDTO(new DroneModelDTO("DJI Agras T20P", "DJI", 20.0, 15));
+            droneModelService.addDroneModel(new DroneModel(null, "DJI Agras T20P",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
+            ));
+            droneModelService.addDroneModel(new DroneModel(null, "Parrot Bluegrass Fields",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
+            ));
+            droneModelService.addDroneModel(new DroneModel(null, "DJI Agras T50",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
+            ));
+            droneModelService.addDroneModel(new DroneModel(null, "DJI Agras T10",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
+            ));
+            droneModelService.addDroneModel(new DroneModel(null, "XAG P100 Pro",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
+            ));
+            droneModelService.addDroneModel(new DroneModel(null, "XAG V40",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
+            ));
+            droneModelService.addDroneModel(new DroneModel(null, "DJI Mavic 3M",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
+            ));
+            droneModelService.addDroneModel(new DroneModel(null, "eBee Ag SenseFly",
+                    40.0, 20.0, 180, 30.0, null, droneBrandService.findById(1L),true
+            ));
 
-//            //insertar drones fisico
-//            droneService.addDTO(new DroneDTO("SN-001", 1L)); // Drone libre
-//            Drone droneOcupado = droneService.addDTO(new DroneDTO("SN-002", 2L)); // Drone para Luis
 
-            // vincular el dron a la reserva (ID 2 de Luis Miguel)
-           /* Reservation luisReserva = reservationService.findById(2L);
-            if (luisReserva != null) {
-                luisReserva.setDrone(droneOcupado);
-                reservationService.add(luisReserva);
-            }*/
+
 
             // Drone en mantenimiento (Vínculado al T40 - ID 1)
             droneService.addDrone(new Drone(null, "DRN-001",
@@ -76,16 +91,36 @@ public class SeedAirApplication {
                     null, droneModelService.findById(1L)
             ));
             droneService.addDrone(new Drone(null, "DRN-002",
-                    "SN-MANTO-02", LocalDate.of(2026, 03, 11), true, null,
-                    null, droneModelService.findById(1L)
+                    "SN-MANTO-02", LocalDate.of(2026, 06, 28), true, null,
+                    null, droneModelService.findById(2L)
             ));
-            droneService.addDrone(new Drone(null, "DRN-002",
-                    "DJI Agras T40", LocalDate.of(2026, 07, 18), false, null,
-                    null, droneModelService.findById(1L)
+            droneService.addDrone(new Drone(null, "DRN-003",
+                    "SN-MANTO-03", LocalDate.of(2026, 07, 18), false, null,
+                    null, droneModelService.findById(3L)
             ));
-            droneService.addDrone(new Drone(null, "DRN-002",
-                    "DJI Agras T20P", LocalDate.of(2026, 01, 20), true, null,
-                    null, droneModelService.findById(1L)
+            droneService.addDrone(new Drone(null, "DRN-004",
+                    "SN-MANTO-04", LocalDate.of(2026, 04, 22), true, null,
+                    null, droneModelService.findById(4L)
+            ));
+            droneService.addDrone(new Drone(null, "DRN-005",
+                    "SN-MANTO-05", LocalDate.of(2026, 11, 10), true, null,
+                    null, droneModelService.findById(5L)
+            ));
+            droneService.addDrone(new Drone(null, "DRN-006",
+                    "SN-MANTO-06", LocalDate.of(2025, 03, 11), true, null,
+                    null, droneModelService.findById(6L)
+            ));
+            droneService.addDrone(new Drone(null, "DRN-007",
+                    "SN-MANTO-07", LocalDate.of(2025, 07, 21), false, null,
+                    null, droneModelService.findById(7L)
+            ));
+            droneService.addDrone(new Drone(null, "DRN-008",
+                    "SN-MANTO-08", LocalDate.of(2026, 12, 27), true, null,
+                    null, droneModelService.findById(8L)
+            ));
+            droneService.addDrone(new Drone(null, "DRN-009",
+                    "SN-MANTO-09", LocalDate.of(2026, 05, 20), true, null,
+                    null, droneModelService.findById(9L)
             ));
 
 

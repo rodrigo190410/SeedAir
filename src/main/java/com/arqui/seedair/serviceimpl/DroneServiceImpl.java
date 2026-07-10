@@ -150,7 +150,8 @@ public class DroneServiceImpl implements DroneService {
                 String.valueOf(drone.getId()),
                 drone.getAcquisitionDate(),
                 drone.getSerialNumber(),
-                drone.getDroneModel() != null ? drone.getDroneModel().getId() : null // droneModelId
+                drone.getDroneModel() != null ? drone.getDroneModel().getId() : null ,
+                drone.getDroneModel() != null ? drone.getDroneModel().getModelName() : "Sin modelo"
         )).collect(Collectors.toList());
     }
 

@@ -16,4 +16,5 @@ public class DroneDTO {
     private LocalDate acquisitionDate;
     private String serialNumber;
     private Long droneModelId;
+    private String modelName;
 }
