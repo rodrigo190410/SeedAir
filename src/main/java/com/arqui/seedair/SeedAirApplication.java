@@ -148,7 +148,8 @@ public class SeedAirApplication {
                     null, null
             ));
             parcelService.add(new Parcel(null, "Cajarmaca - Sector Condorillo Alto", 2.5, -13.4589,
-                    -76.1325, LocalDate.of(2026, 04, 30),
+                    -76.1325,-15.3421,
+                    -28.3245, LocalDate.of(2026, 04, 30),
                     null, customerService.findById(1L), true
             ));
 

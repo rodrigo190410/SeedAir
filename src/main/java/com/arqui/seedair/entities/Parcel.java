@@ -22,6 +22,8 @@ public class Parcel {
     private Double totalHectares;
     private Double latitude;
     private Double longitude;
+    private Double latitude2;
+    private Double longitude2;
     private LocalDate createdAt;
     //->reservation
     @JsonIgnore

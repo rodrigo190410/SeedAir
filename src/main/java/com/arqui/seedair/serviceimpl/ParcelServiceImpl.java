@@ -2,6 +2,7 @@ package com.arqui.seedair.serviceimpl;
 
 import com.arqui.seedair.dtos.ParcelDTO;
 import com.arqui.seedair.dtos.ParcelDTOByCustomerId;
+import com.arqui.seedair.dtos.ParcelResponseDTO;
 import com.arqui.seedair.entities.Customer;
 import com.arqui.seedair.entities.Parcel;
 import com.arqui.seedair.exceptions.IncompleteDataException;
@@ -55,11 +56,23 @@ public class ParcelServiceImpl implements ParcelService{
         if (parcelDTO.getLongitude() == null){
             throw new IncompleteDataException("La longitud es obligatoria");
         }
+        if (parcelDTO.getLatitude2() == null){
+            throw new IncompleteDataException("La segunda latitud es obligatoria");
+        }
+        if (parcelDTO.getLongitude2() == null){
+            throw new IncompleteDataException("La segunda longitud es obligatoria");
+        }
         if (parcelDTO.getLatitude() < -90 || parcelDTO.getLatitude() > 90) {
             throw new InvalidDataRangeException("La latitud debe estar entre -90 y 90");
         }
         if (parcelDTO.getLongitude() < -180 || parcelDTO.getLongitude() > 180) {
             throw new InvalidDataRangeException("La longitud debe estar entre -180 y 180");
+        }
+        if (parcelDTO.getLatitude2() < -90 || parcelDTO.getLatitude2() > 90) {
+            throw new InvalidDataRangeException("La segunda latitud debe estar entre -90 y 90");
+        }
+        if (parcelDTO.getLongitude2() < -180 || parcelDTO.getLongitude2() > 180) {
+            throw new InvalidDataRangeException("La segunda longitud debe estar entre -180 y 180");
         }
 
         Boolean exists = parcelRepository.existsByLatitudeAndLongitude(parcelDTO.getLatitude(), parcelDTO.getLongitude());
@@ -68,7 +81,8 @@ public class ParcelServiceImpl implements ParcelService{
         }
         Parcel newParcel = new Parcel(null,
                 parcelDTO.getLocationText(), parcelDTO.getTotalHectares(),
-                parcelDTO.getLatitude(), parcelDTO.getLongitude(), LocalDate.now(),
+                parcelDTO.getLatitude(), parcelDTO.getLongitude(),
+                parcelDTO.getLatitude2(), parcelDTO.getLongitude2(), LocalDate.now(),
                 null, customer, true
         );
         parcelRepository.save(newParcel);
@@ -80,7 +94,7 @@ public class ParcelServiceImpl implements ParcelService{
         Parcel parcel = findById(id);
         if(parcel != null){
             ParcelDTOByCustomerId parcelDTOByCustomerId = new ParcelDTOByCustomerId(parcel.getId(), parcel.getLocationText(),parcel.getTotalHectares(), parcel.getLatitude(),
-                    parcel.getLongitude(), parcel.getCreatedAt(), parcel.getIsActive());
+                    parcel.getLongitude(), parcel.getLatitude2(), parcel.getLongitude2(), parcel.getCreatedAt(), parcel.getIsActive());
             return parcelDTOByCustomerId;
         }
         return null;
@@ -98,17 +112,38 @@ public class ParcelServiceImpl implements ParcelService{
         if (parcelDTO.getTotalHectares() < 0){
             throw new InvalidDataRangeException("El total de hectáreas no puede ser negativa");
         }
+        if (parcelDTO.getLatitude() == null){
+            throw new IncompleteDataException("La latitud es obligatoria");
+        }
+        if (parcelDTO.getLongitude() == null){
+            throw new IncompleteDataException("La longitud es obligatoria");
+        }
+        if (parcelDTO.getLatitude2() == null){
+            throw new IncompleteDataException("La segunda latitud es obligatoria");
+        }
+        if (parcelDTO.getLongitude2() == null){
+            throw new IncompleteDataException("La segunda longitud es obligatoria");
+        }
         if (parcelDTO.getLatitude() < -90 || parcelDTO.getLatitude() > 90) {
             throw new InvalidDataRangeException("La latitud debe estar entre -90 y 90");
         }
         if (parcelDTO.getLongitude() < -180 || parcelDTO.getLongitude() > 180) {
             throw new InvalidDataRangeException("La longitud debe estar entre -180 y 180");
         }
+        if (parcelDTO.getLatitude2() < -90 || parcelDTO.getLatitude2() > 90) {
+            throw new InvalidDataRangeException("La segunda latitud debe estar entre -90 y 90");
+        }
+        if (parcelDTO.getLongitude2() < -180 || parcelDTO.getLongitude2() > 180) {
+            throw new InvalidDataRangeException("La segunda longitud debe estar entre -180 y 180");
+        }
 
         parcel.setLocationText(parcelDTO.getLocationText());
         parcel.setTotalHectares(parcelDTO.getTotalHectares());
         parcel.setLatitude(parcelDTO.getLatitude());
         parcel.setLongitude(parcelDTO.getLongitude());
+        parcel.setLatitude2(parcelDTO.getLatitude2());
+        parcel.setLongitude2(parcelDTO.getLongitude2());
+        parcel.setIsActive(parcelDTO.getIsActive());
 
         parcelRepository.save(parcel);
 
@@ -132,6 +167,8 @@ public class ParcelServiceImpl implements ParcelService{
                                 p.getTotalHectares(),
                                 p.getLatitude(),
                                 p.getLongitude(),
+                                p.getLatitude2(),
+                                p.getLongitude2(),
                                 p.getCreatedAt(),
                                 p.getIsActive()
 
@@ -161,6 +198,8 @@ public class ParcelServiceImpl implements ParcelService{
                                 p.getTotalHectares(),
                                 p.getLatitude(),
                                 p.getLongitude(),
+                                p.getLatitude2(),
+                                p.getLongitude2(),
                                 p.getCreatedAt(),
                                 p.getIsActive()
 
@@ -171,15 +210,29 @@ public class ParcelServiceImpl implements ParcelService{
     }
 
     @Override
-    public void logicDelete(Long id) {
-        Parcel parcel =  parcelRepository.findById(id).
-                orElseThrow(() ->
-                        new ResourceNotFoundException("La parcela con ID " + id + " no existe."));
+    public List<ParcelResponseDTO> listParcels() {
+        List<Parcel> parcels = parcelRepository.findAll();
 
-        parcel.setIsActive(false);
-        parcelRepository.save(parcel);
+        List<ParcelResponseDTO> parcelResponseDTOList = parcels.stream()
+                .map(p -> {
+                    Customer customer = p.getCustomer();
+                    String customerName = (customer != null)
+                            ? customer.getFirstName() + " " + customer.getLastName() : null;
+                    return new ParcelResponseDTO(
+                            p.getId(),
+                            p.getLocationText(),
+                            p.getTotalHectares(),
+                            p.getLatitude(),
+                            p.getLongitude(),
+                            p.getLatitude2(),
+                            p.getLongitude2(),
+                            p.getCreatedAt(),
+                            customerName,
+                            p.getIsActive()
+                    );
+                }).toList();
 
-
+        return parcelResponseDTOList;
     }
 
 }
