@@ -14,6 +14,8 @@ public class ParcelDTOByCustomerId {
     private Double totalHectares;
     private Double latitude;
     private Double longitude;
+    private Double latitude2;
+    private Double longitude2;
     private LocalDate createdAt;
     private Boolean isActive;
 }

@@ -2,6 +2,7 @@ package com.arqui.seedair.controllers;
 
 import com.arqui.seedair.dtos.ParcelDTO;
 import com.arqui.seedair.dtos.ParcelDTOByCustomerId;
+import com.arqui.seedair.dtos.ParcelResponseDTO;
 import com.arqui.seedair.services.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,13 @@ public class ParcelController {
     public ResponseEntity<ParcelDTO> register(@RequestBody ParcelDTO parcelDTO){
         ParcelDTO newParcel = parcelService.register(parcelDTO);
         return new ResponseEntity<>(newParcel, HttpStatus.CREATED);
+    }
+
+    //obtener listado de todas las parcelas
+    @GetMapping("/parcels") // http://localhost:8080/seedair/parcels
+    public ResponseEntity<List<ParcelResponseDTO>> listParcels(){
+        List<ParcelResponseDTO> parcelsList = parcelService.listParcels();
+        return new ResponseEntity<>(parcelsList, HttpStatus.OK);
     }
 
     //obtener lisstado de parcelas para admin
@@ -51,12 +59,5 @@ public class ParcelController {
     public ResponseEntity<ParcelDTOByCustomerId> getParcelById(@PathVariable Long parcelId){
         ParcelDTOByCustomerId parcelById= parcelService.findParcelById(parcelId);
         return new ResponseEntity<>(parcelById, HttpStatus.OK);
-    }
-
-    //Eliminación logica
-    @DeleteMapping("/parcels/logicalDelete/{parcelId}")
-    public ResponseEntity<Void> updateStatus (@PathVariable Long parcelId){
-        parcelService.logicDelete(parcelId);
-        return new ResponseEntity<>( HttpStatus.OK);
     }
 }
